@@ -1,0 +1,11 @@
+export const POLICY_STATUS_LIST = {
+    DEFFERED: 1,
+    ACCEPTED: 2,
+    REJECTED: 3
+}
+
+export const POLICY_ACKNOWLEDGEMENT = {
+    DEFFERED: 1,
+    ACCEPTED: 2,
+    REJECTED: 3
+}

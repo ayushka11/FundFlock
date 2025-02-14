@@ -1,0 +1,16 @@
+enum TournamentStatusAries{
+  CREATED = 5,
+  ANNOUNCED = 10,
+  REGISTRATION = 15,
+  SEAT_ALLOCATION = 18,
+  LATE_REGISTRATION = 20,
+  PRIZE_STRUCTURE_CREATION_IN_PROGRESS = 23,
+  RUNNING = 25,
+  COMPLETED = 30,
+  CANCEL_PENDING = 35,
+  ABORT_PENDING = 40,
+  CANCELED = 45,
+  ABORTED = 50,
+}
+
+export default TournamentStatusAries;

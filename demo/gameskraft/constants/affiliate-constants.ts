@@ -1,0 +1,1 @@
+export const AFFILIATE_GENERATE_REPORT_SUCCESS_MESSAGE = "This feature is currently undergoing maintenance. We will notify you once it's operational again.";

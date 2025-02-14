@@ -1,0 +1,273 @@
+export const REQUEST_PARAM = {
+    NUM_OF_RECORDS: 'numOfRecords',
+    OFFSET: 'offset',
+    WALLET_TRANSACTION_METHOD: 'walletTransactionMethod',
+    TICKET_ID: 'ticketId',
+    STATUS: 'status',
+};
+
+
+export const GAME_PLAY_TRANSACTION = {
+    JOIN_CASH_GAME_TABLE: 14,
+    TOPUP_CASH_GAME_TABLE: 15,
+    LEAVE_CASH_GAME_TABLE: 16,
+    LEAVE_ON_COMPLETE_CASH_GAME_HAND: 21,
+    TOPUP_ON_COMPLETE_CASH_GAME_HAND: 22,
+    REBUY_CASH_GAME_TABLE: 32,
+    JOIN_CASH_GAME_TABLE_ROLLBACK: 34,
+    TOPUP_CASH_GAME_TABLE_ROLLBACK: 35,
+    REBUY_CASH_GAME_TABLE_ROLLBACK: 36,
+    CASH_GAME_TABLE_TRANSACTION_ROLLBACK: 40,
+    REGISTER_TOURNAMENT: 42,
+    REENTRY_TOURNAMENT: 43,
+    REBUY_TOURNAMENT: 44,
+    ADDON_TOURNAMENT: 45,
+    UNREGISTER_TOURNAMENT: 46,
+    SETTLE_TOURNAMENT: 47,
+    REGISTER_TOURNAMENT_ROLLBACK: 48,
+    REENTRY_TOURNAMENT_ROLLBACK: 49,
+    REBUY_TOURNAMENT_ROLLBACK: 50,
+    ADDON_TOURNAMENT_ROLLBACK: 51,
+    TOURNAMENT_TRANSACTION_ROLLBACK: 52,
+    SATELLITE_TOURNAMENT_WINNING: 68,
+    AUTO_TOPUP_ON_COMPLETE_CASH_GAME_HAND: 119,
+}
+
+export const DCS_TDC_INCLUDE_TRANSACTIONS = {
+    ...GAME_PLAY_TRANSACTION,
+    CREDIT_POCKET_COINS_AMOUNT: 11,
+    CONFISCATE_USER_AMOUNT: 55,
+    CREDIT_USER_AMOUNT: 56,
+    DEBIT_USER_AMOUNT: 57,
+    CREDIT_REFERRAL_REFEREE_BENEFIT_AMOUNT: 58,
+    CREDIT_REFERRAL_REFERRER_BENEFIT_AMOUNT: 59,
+    CREDIT_ADD_CASH_REWARD: 61,
+    CREDIT_WITHDRAW_REWARD: 63,
+    REWARD_EXPIRY: 65,
+    REFUND_CASH_DCS : 104,
+    REVERSE_REFUND_CASH_DCS: 105,
+    FRAUD_VICTIM_CREDIT: 110,
+    PRACTICE_APP_HANDS_PLAYED_REWARD: 112,
+    DISBURSE_RELEASED_LOCKED_DCS: 118,
+}
+
+export const ONLY_DCS_AND_TDC_TRANSACTION = {
+    ADD_CASH_REWARD_ALLOCATION: 123,
+}
+
+export const LEADERBOARD_TRANSACTION = {
+    LEADERBOARD_WINNING: 133,
+}
+
+export const CASH_TRANSACTION_TYPES = {
+    ADD_CASH: 2,
+    REFUND_CASH: 3,
+    REFUND_CASH_TDS: 4,
+    REVERSE_REFUND_CASH: 5,
+    REVERSE_REFUND_CASH_TDS: 6,
+    WITHDRAW_CASH: 7,
+    WITHDRAW_CASH_TDS: 8,
+    REVERSE_WITHDRAW_CASH: 9,
+    REVERSE_WITHDRAW_CASH_TDS: 10,
+    DISBURSE_RELEASED_LOCKED_CASH: 54,
+    ADD_CASH_GST: 60,
+    WALLET_MIGRATION: 69,
+    TRANSACTION_FIX_CREDIT: 107,
+    TRANSACTION_FIX_DEBIT: 108,
+    FISCAL_YEAR_ENDING_TDS_DEDUCTION: 126,
+    FISCAL_YEAR_WITHDRAW_REVERSE: 127,
+    BUSINESS_PROMOTION_CREDIT: 129,
+    TDS_CORRECTION_CREDIT: 130,
+    TDS_CORRECTION_DEBIT: 131,
+    RUNNING_BALANCE_CORRECTION: 132,
+    ...GAME_PLAY_TRANSACTION,
+    ...DCS_TDC_INCLUDE_TRANSACTIONS,
+    ...LEADERBOARD_TRANSACTION,
+}
+
+export const CASH_TRANSACTION_NAMES = {
+    JOIN_CASH_GAME_TABLE: "Joined Cash Game",
+    LEAVE_CASH_GAME_TABLE: "Left Cash Game",
+}
+
+export const PRACTICE_TRANSACTION_TYPES = {
+    JOIN_PRACTICE_GAME_TABLE: 23,
+    TOPUP_PRACTICE_GAME_TABLE: 24,
+    LEAVE_PRACTICE_GAME_TABLE: 25,
+    LEAVE_ON_COMPLETE_PRACTICE_GAME_HAND: 30,
+    TOPUP_ON_COMPLETE_PRACTICE_GAME_HAND: 31,
+    REBUY_PRACTICE_GAME_TABLE: 33,
+}
+
+export const DEBIT_RAKE_TRANSACTION_TYPES = {
+    SETTLE_CASH_GAME_HAND_DEBIT_RAKE:  19,
+}
+
+export const ALL_TRANSACTION_TYPES = {
+    ...CASH_TRANSACTION_TYPES,
+    ...PRACTICE_TRANSACTION_TYPES,
+    ...ONLY_DCS_AND_TDC_TRANSACTION,
+    WINNINGS_TO_GAME_SEGMENT: 62,
+}
+
+export const WALLET_TYPES = {
+    PRIMARY: 1,
+    HOLDING: 2,
+    ALL: 3
+}
+
+export const TRANSACTION_METHODS = {
+    WALLET: 'WALLET',
+    GAMEPLAY: 'GAMEPLAY',
+    TDS: 'TDS',
+    DCS: 'DCS',
+    TDC: 'TDC',
+    ALL: 'ALL',
+    DEBIT_RAKE: 'DEBIT_RAKE',
+    LEADERBOARD: 'LEADERBOARD',
+    NONE: 'NONE',
+}
+
+export const DATA_TRANSFORMATION_KEYS = {
+    TRANSACTION_ID: 'transactionId'
+}
+
+export const USER_TRANSACTION_TYPE = {
+    CREDIT: 'credit',
+    DEBIT: 'debit'
+}
+
+export const TICKET_TYPES = {
+    CASH_GAME_TICKETS: 'CASH_GAME_TICKETS',
+    TOURNAMENT_TICKETS: 'TOURNAMENT_TICKETS'
+}
+
+export const SUPERNOVA_TRANSACTION_STATUS = {
+    initiated: 5,
+    pending: 10,
+    success: 20,
+    failed: 21,
+    expired: 22,
+    pending_approval: 10,
+    rejected: 21,
+}
+
+
+export const MS_PAYOUT_TRANSACTION_TYPES = {
+    "gateway_pending": 10,
+    "success": 20,
+    "failed": 21,
+}
+
+
+export const BUY_IN_CURRENCY = ['GAME_SEGMENT', 'ADD_CASH_SEGMENT', 'WINNING_SEGMENT', 'DISCOUNT_CREDIT_SEGMENT', 'WITHDRAWAL_CASH', 'DEPOSIT_CASH'];
+
+export const CURRENCY_CODE = {
+    GAME_SEGMENT: 'GAME_SEGMENT',
+    ADD_CASH_SEGMENT: 'ADD_CASH_SEGMENT',
+    WINNING_SEGMENT: 'WINNING_SEGMENT',
+    DISCOUNT_CREDIT_SEGMENT: 'DISCOUNT_CREDIT_SEGMENT',
+    TOURNAMENT_DISCOUNT_SEGMENT: 'TOURNAMENT_DISCOUNT_SEGMENT',
+    GST_SEGMENT: 'GST_SEGMENT',
+    LOCKED_DCS: 'LOCKED_DCS',
+    SEAT: 'SEAT',
+}
+
+
+export const TRANSACTION_TYPE_MSG = {
+    ADD_CASH: "₹### Added Successfully",
+    WITHDRAW_CASH: "₹### Withdrawal Successful",
+    JOIN_CASH_GAME_TABLE: 'Join Table Successful',
+    TOPUP_CASH_GAME_TABLE: 'Topup Table Successful',
+    TOPUP_ON_COMPLETE_CASH_GAME_HAND: 'Topup Table Successful',
+    LEAVE_CASH_GAME_TABLE: 'Leave Table Successful',
+    LEAVE_ON_COMPLETE_CASH_GAME_HAND: 'Leave Table Successful',
+    REBUY_CASH_GAME_TABLE: 'Rebuy Table Successful',
+    REGISTER_TOURNAMENT: 'Tournament Register',
+    REENTRY_TOURNAMENT: 'Tournament Re-entry',
+    REBUY_TOURNAMENT: 'Tournament Rebuy',
+    ADDON_TOURNAMENT: 'Tournament Addon',
+    UNREGISTER_TOURNAMENT: 'Tournament Unregister',
+    SETTLE_TOURNAMENT: 'Tournamnet Winnings',
+    CREDIT_ADD_CASH_REWARD: '### Credits Received',
+    CREDIT_WITHDRAW_REWARD: '### Credits Received',
+    REFUND_CASH_TDS: 'TDS Refund',
+    REVERSE_REFUND_CASH_TDS: 'TDS Refund Rejected',
+    WITHDRAW_CASH_TDS: 'TDS Deducted',
+    REVERSE_WITHDRAW_CASH_TDS: 'TDS Withdrawal Rejected',
+    REVERSE_WITHDRAW_CASH: 'Withdrawal Rejected',
+    CREDIT_POCKET_COINS_AMOUNT: 'Coin Redemption',
+    CREDIT_REFERRAL_REFEREE_BENEFIT_AMOUNT: 'Referee Wager Cash',
+    CREDIT_REFERRAL_REFERRER_BENEFIT_AMOUNT: 'Referral Wager Cash',
+    CREDIT_USER_AMOUNT: 'Reward Credited',
+    DEBIT_USER_AMOUNT: 'Reward Debited',
+    CONFISCATE_USER_AMOUNT: 'Confiscation',
+    REWARD_EXPIRY: '### Credits Expired',
+    SATELLITE_TOURNAMENT_WINNING: 'Satellite Tournament Winning',
+    REFUND_CASH: 'Refund from Debit Balance Successful',
+    REVERSE_REFUND_CASH: 'Refund from Debit Balance Rejected',
+    TRANSACTION_FIX_CREDIT: 'System Correction',
+    TRANSACTION_FIX_DEBIT: 'System Correction',
+    FRAUD_VICTIM_CREDIT: 'System Refund',
+    DISBURSE_RELEASED_LOCKED_DCS: 'Released from Locked DC',
+    FISCAL_YEAR_ENDING_TDS_DEDUCTION: 'Fiscal Year Ending Tds Deduction',
+    FISCAL_YEAR_WITHDRAW_REVERSE: 'Cross financial year transaction',
+    BUSINESS_PROMOTION_CREDIT: 'Business Promotion Credit',
+    TDS_CORRECTION_CREDIT: 'TDS Correction',
+    TDS_CORRECTION_DEBIT: 'TDS Correction',
+    RUNNING_BALANCE_CORRECTION: 'System Correction',
+    LEADERBOARD_WINNING: 'Leaderboard Winnings',
+    OTHERS: 'Transactions',
+
+}
+
+
+export const TRANSACTION_TAG_MSG = {
+
+    ADD_CASH: 'Received from Add Cash Reward',
+    WITHDRAW_CASH: 'Received from Withdrawal Reward',
+    CREDIT_POCKET_COINS_AMOUNT: 'Received from Royalty Coins',
+    JOIN_CASH_GAME_TABLE: 'Consumed for gameplay',
+    TOPUP_CASH_GAME_TABLE: 'Consumed for gameplay',
+    LEAVE_CASH_GAME_TABLE: 'Received for gameplay',
+    REBUY_CASH_GAME_TABLE: 'Consumed for gameplay',
+    JOIN_CASH_GAME_TABLE_ROLLBACK: 'Received from gameplay',
+    TOPUP_CASH_GAME_TABLE_ROLLBACK: 'Received from gameplay',
+    REBUY_CASH_GAME_TABLE_ROLLBACK: 'Received from gameplay',
+    CASH_GAME_TABLE_TRANSACTION_ROLLBACK: 'Received from gameplay',
+    REGISTER_TOURNAMENT: 'Consumed for gameplay',
+    REENTRY_TOURNAMENT: 'Consumed for gameplay',
+    REBUY_TOURNAMENT: 'Consumed for gameplay',
+    ADDON_TOURNAMENT: 'Consumed for gameplay',
+    UNREGISTER_TOURNAMENT: 'Received from gameplay',
+    SETTLE_TOURNAMENT: 'Received from gameplay',
+    REGISTER_TOURNAMENT_ROLLBACK: 'Received from gameplay',
+    REENTRY_TOURNAMENT_ROLLBACK: 'Received from gameplay',
+    REBUY_TOURNAMENT_ROLLBACK: 'Received from gameplay',
+    ADDON_TOURNAMENT_ROLLBACK: 'Received from gameplay',
+    TOURNAMENT_TRANSACTION_ROLLBACK: 'Received from gameplay',
+    CREDIT_USER_AMOUNT: 'Platform Rewards',
+    DEBIT_USER_AMOUNT: '',
+    CREDIT_REFERRAL_REFEREE_BENEFIT_AMOUNT: 'Received from Referral Program',
+    CREDIT_REFERRAL_REFERRER_BENEFIT_AMOUNT: 'Received from Referral Program',
+    CREDIT_ADD_CASH_REWARD: 'Received on depositing cash',
+    CREDIT_WITHDRAW_REWARD: 'Received from Superboost withdrawal',
+    SATELLITE_TOURNAMENT_WINNING: 'Received from Satellite Tournament',
+    REWARD_EXPIRY: 'Credits Expired',
+    DISBURSE_RELEASED_LOCKED_DCS: 'Released from Locked DC',
+    ADD_CASH_REWARD_ALLOCATION: 'Received on depositing cash',
+
+}
+
+export const TRANSACTION_ID_PREFIX = {
+    "ADDCASH": "ADD_CASH_ORDER_{orderId}"
+}
+
+export const INTERNAL_TRANSACTION_TYPES = {
+    CREDIT: 1,
+    DEBIT: 2
+}
+
+export const PROMO_TRANSACTION_TYPES = {
+    PROMO_PUBLISH: 123
+}
