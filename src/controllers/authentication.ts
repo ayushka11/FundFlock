@@ -1,71 +1,54 @@
-import express, { RequestHandler } from 'express';
-import { getUserByEmail, createUser } from '../models/users';
-import { random, authentication } from '../helpers';
-
-export const login: RequestHandler = async (req, res) => {
+import express, { RequestHandler } from "express";
+import { random, authentication } from "../helpers";
+import AuthService from "../services/authService";
+export default class AuthController {
+  static async login(req: express.Request, res: express.Response) {
     try {
-        const { email, password } = req.body;
+      const { email, password } = req.body;
 
-        if (!email || !password) {
-            res.sendStatus(400);
-            return;
-        }
+      const data = await AuthService.login(email, password);
 
-        const user = await getUserByEmail(email).select("+authentication.salt +authentication.password");
-        if (!user) {
-            res.sendStatus(404);
-            return;
-        }
+      if (!data.status.success) {
+        res.status(401).json(data);
+        return;
+      }
 
-        const expectedHash = authentication(user.authentication.salt, password);
+      const user = data.data;
 
-        if (user.authentication.password !== expectedHash) {
-            res.sendStatus(401);
-            return;
-        }
+      res.cookie("sessionToken", user.authentication.sessionToken, {
+        domain: "localhost",
+        path: "/",
+      });
 
-        const salt = random();
-        user.authentication.sessionToken = authentication(salt, user._id.toString());
-
-        await user.save();
-
-        res.cookie("sessionToken", user.authentication.sessionToken, {domain: "localhost", path: "/"});
-
-        res.status(201).json(user);
+      res.status(200).json(data);
     } catch (error) {
-        console.error(error);
-        res.sendStatus(500);
+      console.error(error);
+      res.sendStatus(500);
     }
-};
+  }
 
-export const register: RequestHandler = async (req, res) => {
+  static async register(req: express.Request, res: express.Response) {
     try {
-        const { username, email, password } = req.body;
+      const { username, email, password } = req.body;
 
-        if (!username || !email || !password) {
-            res.sendStatus(400);
-            return;
-        }
+      const data = await AuthService.register(username, email, password);
 
-        const existingUser = await getUserByEmail(email);
-        if (existingUser) {
-            res.sendStatus(409);
-            return;
-        }
+      if (!data.status.success) {
+        res.status(401).json(data);
+        return;
+      }
 
-        const salt = random();
-        const user = await createUser({
-            username,
-            email,
-            authentication: {
-                salt,
-                password: authentication(salt, password),
-            },
-        });
+      const user = data.data;
 
-        res.status(201).json(user);
+      res.cookie("sessionToken", user.authentication.sessionToken, {
+        domain: "localhost",
+        path: "/",
+      });
+
+      res.status(200).json(data);
     } catch (error) {
-        console.error(error);
-        res.sendStatus(500);
+      console.error(error);
+      res.sendStatus(500);
     }
-};
+  }
+}
