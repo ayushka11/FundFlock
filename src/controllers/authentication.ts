@@ -1,6 +1,7 @@
 import express, { RequestHandler } from "express";
 import { random, authentication } from "../helpers";
 import AuthService from "../services/authService";
+import jsonWebToken from "jsonwebtoken";
 export default class AuthController {
   static async login(req: express.Request, res: express.Response) {
     try {
@@ -15,7 +16,18 @@ export default class AuthController {
 
       const user = data.data;
 
-      res.cookie("sessionToken", user.authentication.sessionToken, {
+      const token = jsonWebToken.sign(
+        {
+          username: user.username,
+          email: user.email
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+      
+      res.cookie("token", token, {
         domain: "localhost",
         path: "/",
       });
@@ -40,11 +52,22 @@ export default class AuthController {
 
       const user = data.data;
 
-      res.cookie("sessionToken", user.authentication.sessionToken, {
+      const token = jsonWebToken.sign(
+        {
+          username: user.username,
+          email: user.email
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+
+      res.cookie("token", token, {
         domain: "localhost",
         path: "/",
       });
-
+      
       res.status(200).json(data);
     } catch (error) {
       console.error(error);

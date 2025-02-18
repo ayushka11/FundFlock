@@ -17,6 +17,7 @@
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/mongoose": "^5.11.96",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
@@ -28,6 +29,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.0"
   }
 }
