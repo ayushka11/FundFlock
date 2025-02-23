@@ -41,4 +41,4 @@ mongoose.connection.on("error", (error) => {
   console.error(error);
 });
 
-app.use('/', router());
+app.use("/", router());

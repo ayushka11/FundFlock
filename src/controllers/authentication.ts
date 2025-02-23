@@ -19,14 +19,14 @@ export default class AuthController {
       const token = jsonWebToken.sign(
         {
           username: user.username,
-          email: user.email
+          email: user.email,
         },
         process.env.JWT_SECRET,
         {
           expiresIn: "1d",
         }
       );
-      
+
       res.cookie("token", token, {
         domain: "localhost",
         path: "/",
@@ -55,7 +55,7 @@ export default class AuthController {
       const token = jsonWebToken.sign(
         {
           username: user.username,
-          email: user.email
+          email: user.email,
         },
         process.env.JWT_SECRET,
         {
@@ -67,7 +67,7 @@ export default class AuthController {
         domain: "localhost",
         path: "/",
       });
-      
+
       res.status(200).json(data);
     } catch (error) {
       console.error(error);

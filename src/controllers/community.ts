@@ -34,7 +34,9 @@ export default class CommunityController {
         milestones
       );
 
-      const milestone_ids = milestones_data.data.map((milestone: any) => milestone._id);
+      const milestone_ids = milestones_data.data.map(
+        (milestone: any) => milestone._id
+      );
       const updated_data = await CommunityService.updateCommunityMilestones(
         data.data._id,
         milestone_ids
@@ -82,4 +84,3 @@ export default class CommunityController {
     }
   }
 }
-

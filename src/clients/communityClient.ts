@@ -62,8 +62,4 @@ export default class CommunityClient {
       community.toObject()
     );
   }
-
-  static async getCommunityHome(user_id: string): Promise<any> {
-    
-  }
 }
