@@ -32,4 +32,8 @@ export default class UserClient {
     static async updateUserById(id: string, values: Record<string, any>): Promise<any> {
         return UserModel.findByIdAndUpdate(id, values, { new: true });
     }
+
+    static async updateUserCommunities(user_id: string, community_id: string): Promise<any> {
+        return UserModel.findByIdAndUpdate(user_id, { $push: { communities_ids: community_id } });
+    }
 }

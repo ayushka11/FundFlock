@@ -20,4 +20,14 @@ export default class UserService {
             return [];
         }
     }
+
+    static async updateUserCommunities(user_id: string, community_id: string): Promise<any> {
+        try {
+            const data = await UserClient.updateUserCommunities(user_id, community_id);
+            return data;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
 }
