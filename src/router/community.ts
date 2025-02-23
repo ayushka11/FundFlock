@@ -5,4 +5,5 @@ import verifyToken from "../middlewares/authentication";
 
 export default (router: express.Router) => {
     router.post('/community/create', verifyToken, CommunityController.createCommunity);
+    router.get('/community/home', verifyToken, CommunityController.getCommunityHome);
 };

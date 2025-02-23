@@ -56,4 +56,14 @@ export default class CommunityClient {
       { new: true }
     ).then((community) => community.toObject());
   }
+
+  static async getCommunity(community_id: string): Promise<any> {
+    return CommunityModel.findOne({ _id: community_id }).then((community) =>
+      community.toObject()
+    );
+  }
+
+  static async getCommunityHome(user_id: string): Promise<any> {
+    
+  }
 }

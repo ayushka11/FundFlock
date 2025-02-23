@@ -30,4 +30,14 @@ export default class UserService {
             return;
         }
     }
+
+    static async getUserCommunities(user_id: string): Promise<any> {
+        try {
+            const user = await UserClient.getUserById(user_id);
+            return user.communities_ids;
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    }
 }

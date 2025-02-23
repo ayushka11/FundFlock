@@ -61,5 +61,25 @@ export default class CommunityController {
       res.sendStatus(500);
     }
   }
+
+  static async getCommunityHome(req: AuthRequest, res: express.Response) {
+    try {
+      const user_id = await UserService.getUserId(req.user.username);
+
+      const communities_ids = await UserService.getUserCommunities(user_id);
+
+      const data = await CommunityService.getCommunityHome(communities_ids);
+
+      if (!data.status.success) {
+        res.status(401).json(data);
+        return;
+      }
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
 }
 

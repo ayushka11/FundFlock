@@ -96,4 +96,48 @@ export default class CommunityService {
             };
         }
     }
+
+    static async getCommunityHome(communities_ids: string[]): Promise<any> {
+        try {
+            const communities = await Promise.all(communities_ids.map((community_id) => CommunityClient.getCommunity(community_id)));
+
+            const data = communities.map((community) => {
+                return {
+                    community_name: community.community_name,
+                    description: community.description,
+                    net_fund_amt: community.net_fund_amt,
+                    current_amount: community.current_amount,
+                    expiring_date: community.expiring_date,
+                    status: "",
+                };
+            });
+
+            const today = new Date();
+            data.forEach((community) => {
+                const expiring_date = new Date(community.expiring_date);
+                if (today > expiring_date) {
+                    community.status = "expired";
+                } else {
+                    community.status = "active";
+                }
+            });
+            console.log(data);
+
+            return {
+                status: {
+                    success: true,
+                },
+                data: data,
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                status: {
+                    success: false,
+                    error: "internal server error",
+                },
+                data: {},
+            };
+        }
+    }
 }
