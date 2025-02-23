@@ -5,16 +5,16 @@ export default class UserClient {
         return UserModel.find();
     }
 
+    static async getUserByUsername(username: string): Promise<any> {
+        return UserModel.findOne({ username });
+    }
+
     static async getUserByEmail(email: string): Promise<any> {
         return UserModel.findOne({ email });
     }
 
     static async getUserByEmailWithAuth(email: string): Promise<any> {
         return UserModel.findOne({ email }).select("+authentication.salt +authentication.password");
-    }
-
-    static async getUserBySessionToken(sessionToken: string): Promise<any> {
-        return UserModel.findOne({ "authentication.sessionToken": sessionToken });
     }
 
     static async getUserById(id: string): Promise<any> {

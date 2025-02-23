@@ -1,4 +1,3 @@
-import express from "express";
 import UserClient from "../clients/userClient";
 import { random, authentication } from "../helpers";
 
@@ -38,14 +37,6 @@ export default class AuthService {
                     data: {},
                   };
             }
-
-            const salt = random();
-            user.authentication.sessionToken = authentication(
-                salt,
-                user._id.toString()
-            );
-
-            await user.save();
 
             return {
                 status: {
