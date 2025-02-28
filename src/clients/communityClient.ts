@@ -62,4 +62,10 @@ export default class CommunityClient {
       community.toObject()
     );
   }
+
+  static async getMilestones(community_id: string): Promise<any> {
+    return MilestoneModel.find({ community_id }).then((milestones) =>
+      milestones.map((milestone) => milestone.toObject())
+    );
+  }
 }

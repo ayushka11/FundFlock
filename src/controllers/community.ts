@@ -75,4 +75,17 @@ export default class CommunityController {
       next(error);
     }
   }
+
+  static async getCommunityDetails(req: AuthRequest, res: express.Response, next: express.NextFunction) {
+    try {
+      const { community_id } = req.params;
+
+      const data = await CommunityService.getCommunityDetails(community_id);
+
+      ResponseHelper.sendSuccessResponse(res, data);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
 }

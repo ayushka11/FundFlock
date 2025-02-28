@@ -11,6 +11,7 @@ export default (router: express.Router) => {
 
   communityRouter.post("/create", CommunityController.createCommunity);
   communityRouter.get("/home", CommunityController.getCommunityHome);
+  communityRouter.get("/details/:community_id", CommunityController.getCommunityDetails);
 
   communityRouter.use(errorHandlingMiddleware);
 

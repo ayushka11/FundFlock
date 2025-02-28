@@ -46,4 +46,8 @@ export default class UserClient {
       $push: { communities_ids: community_id },
     });
   }
+
+  static async getUsernameById (id: string): Promise<any> {
+    return UserModel.findById(id).select("username");
+  }
 }
