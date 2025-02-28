@@ -1,41 +1,24 @@
 import UserClient from "../clients/userClient";
 import { random, authentication } from "../helpers";
+import CustomError from "../middlewares/errorHandlingMiddleware";
 
 export default class AuthService {
   static async login(email: string, password: string): Promise<any> {
     try {
       if (!email || !password) {
-        return {
-          status: {
-            success: false,
-            error: "no email or password",
-          },
-          data: {},
-        };
+        throw new CustomError("no email or password", 400);
       }
 
       const user = await UserClient.getUserByEmailWithAuth(email);
 
       if (!user) {
-        return {
-          status: {
-            success: false,
-            error: "user not found",
-          },
-          data: {},
-        };
+        throw new CustomError("user not found", 404);
       }
 
       const expectedHash = authentication(user.authentication.salt, password);
 
       if (user.authentication.password !== expectedHash) {
-        return {
-          status: {
-            success: false,
-            error: "incorrect email or password",
-          },
-          data: {},
-        };
+        throw new CustomError("invalid email or password", 401);
       }
 
       return {
@@ -45,14 +28,7 @@ export default class AuthService {
         data: user,
       };
     } catch (error) {
-      console.error(error);
-      return {
-        status: {
-          success: false,
-          error: "internal server error",
-        },
-        data: {},
-      };
+      throw error;
     }
   }
 
@@ -63,24 +39,12 @@ export default class AuthService {
   ): Promise<any> {
     try {
       if (!username || !email || !password) {
-        return {
-          status: {
-            success: false,
-            error: "missing fields",
-          },
-          data: {},
-        };
+        throw new CustomError("missing required fields", 400);
       }
 
       const existingUser = await UserClient.getUserByEmail(email);
       if (existingUser) {
-        return {
-          status: {
-            success: false,
-            error: "user already exists",
-          },
-          data: {},
-        };
+        throw new CustomError("user already exists", 409);
       }
 
       const salt = random();
@@ -100,14 +64,7 @@ export default class AuthService {
         data: user,
       };
     } catch (error) {
-      console.error(error);
-      return {
-        status: {
-          success: false,
-          error: "internal server error",
-        },
-        data: {},
-      };
+      throw error;
     }
   }
 }

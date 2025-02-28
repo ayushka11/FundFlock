@@ -6,8 +6,7 @@ export default class UserService {
       const user = await UserClient.getUserByUsername(username);
       return user._id;
     } catch (error) {
-      console.error(error);
-      return "";
+      throw error;
     }
   }
 
@@ -18,8 +17,7 @@ export default class UserService {
       );
       return users.map((user) => user._id);
     } catch (error) {
-      console.error(error);
-      return [];
+      throw error;
     }
   }
 
@@ -34,8 +32,7 @@ export default class UserService {
       );
       return data;
     } catch (error) {
-      console.error(error);
-      return;
+      throw error;
     }
   }
 
@@ -44,8 +41,7 @@ export default class UserService {
       const user = await UserClient.getUserById(user_id);
       return user.communities_ids;
     } catch (error) {
-      console.error(error);
-      return [];
+      throw error;
     }
   }
 }

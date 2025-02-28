@@ -3,7 +3,7 @@ import { random, authentication } from "../helpers";
 import AuthService from "../services/authService";
 import jsonWebToken from "jsonwebtoken";
 export default class AuthController {
-  static async login(req: express.Request, res: express.Response) {
+  static async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { email, password } = req.body;
 
@@ -35,11 +35,11 @@ export default class AuthController {
       res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      res.sendStatus(500);
+      next(error);
     }
   }
 
-  static async register(req: express.Request, res: express.Response) {
+  static async register(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
       const { username, email, password } = req.body;
 
@@ -72,7 +72,7 @@ export default class AuthController {
       res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      res.sendStatus(500);
+      next(error);
     }
   }
 }

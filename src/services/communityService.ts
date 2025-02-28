@@ -1,4 +1,5 @@
 import CommunityClient from "../clients/communityClient";
+import CustomError from "../middlewares/errorHandlingMiddleware";
 
 export default class CommunityService {
   static async createCommunity(
@@ -17,13 +18,7 @@ export default class CommunityService {
         !net_fund_amt ||
         !expiring_date
       ) {
-        return {
-          status: {
-            success: false,
-            error: "missing required fields",
-          },
-          data: {},
-        };
+        throw new CustomError("missing required fields", 400);
       }
 
       const data = await CommunityClient.createCommunity(
@@ -42,14 +37,7 @@ export default class CommunityService {
         data: data,
       };
     } catch (error) {
-      console.error(error);
-      return {
-        status: {
-          success: false,
-          error: "internal server error",
-        },
-        data: {},
-      };
+      throw error;
     }
   }
 
@@ -59,13 +47,7 @@ export default class CommunityService {
   ): Promise<any> {
     try {
       if (!community_id || milestones.length === 0) {
-        return {
-          status: {
-            success: false,
-            error: "missing required fields",
-          },
-          data: {},
-        };
+        throw new CustomError("missing required fields", 400);
       }
 
       const data = await CommunityClient.createMilestones(
@@ -80,14 +62,7 @@ export default class CommunityService {
         data: data,
       };
     } catch (error) {
-      console.error(error);
-      return {
-        status: {
-          success: false,
-          error: "internal server error",
-        },
-        data: {},
-      };
+      throw error;
     }
   }
 
@@ -97,13 +72,7 @@ export default class CommunityService {
   ): Promise<any> {
     try {
       if (!community_id || milestone_ids.length === 0) {
-        return {
-          status: {
-            success: false,
-            error: "missing required fields",
-          },
-          data: {},
-        };
+        throw new CustomError("missing required fields", 400);
       }
 
       const data = await CommunityClient.updateCommunityMilestones(
@@ -118,14 +87,7 @@ export default class CommunityService {
         data: data,
       };
     } catch (error) {
-      console.error(error);
-      return {
-        status: {
-          success: false,
-          error: "internal server error",
-        },
-        data: {},
-      };
+      throw error;
     }
   }
 
@@ -169,14 +131,7 @@ export default class CommunityService {
         data: data,
       };
     } catch (error) {
-      console.error(error);
-      return {
-        status: {
-          success: false,
-          error: "internal server error",
-        },
-        data: {},
-      };
+      throw error;
     }
   }
 }

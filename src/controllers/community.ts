@@ -5,7 +5,7 @@ import { AuthRequest } from "types/auth";
 import CommunityService from "../services/communityService";
 
 export default class CommunityController {
-  static async createCommunity(req: AuthRequest, res: express.Response) {
+  static async createCommunity(req: AuthRequest, res: express.Response, next: express.NextFunction) {
     try {
       const {
         community_name,
@@ -61,11 +61,11 @@ export default class CommunityController {
       res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      res.sendStatus(500);
+      next(error);
     }
   }
 
-  static async getCommunityHome(req: AuthRequest, res: express.Response) {
+  static async getCommunityHome(req: AuthRequest, res: express.Response, next: express.NextFunction) {
     try {
       const user_id = await UserService.getUserId(req.user.username);
 
@@ -81,7 +81,7 @@ export default class CommunityController {
       res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      res.sendStatus(500);
+      next(error);
     }
   }
 }

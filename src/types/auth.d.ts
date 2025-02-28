@@ -9,3 +9,7 @@ export interface UserPayload extends JwtPayload {
 export interface AuthRequest extends Request {
   user?: UserPayload;
 }
+
+export interface CustomError extends Error {
+  statusCode?: number;
+}
