@@ -21,12 +21,7 @@ export default class AuthService {
         throw new CustomError("invalid email or password", 401);
       }
 
-      return {
-        status: {
-          success: true,
-        },
-        data: user,
-      };
+      return user;
     } catch (error) {
       throw error;
     }
@@ -57,12 +52,7 @@ export default class AuthService {
         },
       });
 
-      return {
-        status: {
-          success: true,
-        },
-        data: user,
-      };
+      return user;
     } catch (error) {
       throw error;
     }

@@ -30,12 +30,7 @@ export default class CommunityService {
         expiring_date
       );
 
-      return {
-        status: {
-          success: true,
-        },
-        data: data,
-      };
+      return data;
     } catch (error) {
       throw error;
     }
@@ -55,12 +50,7 @@ export default class CommunityService {
         milestones
       );
 
-      return {
-        status: {
-          success: true,
-        },
-        data: data,
-      };
+      return data;
     } catch (error) {
       throw error;
     }
@@ -80,12 +70,7 @@ export default class CommunityService {
         milestone_ids
       );
 
-      return {
-        status: {
-          success: true,
-        },
-        data: data,
-      };
+      return data;
     } catch (error) {
       throw error;
     }
@@ -124,12 +109,7 @@ export default class CommunityService {
         communities: communities,
       };
 
-      return {
-        status: {
-          success: true,
-        },
-        data: data,
-      };
+      return data;
     } catch (error) {
       throw error;
     }

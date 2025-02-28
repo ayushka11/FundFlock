@@ -2,6 +2,7 @@ import express, { RequestHandler } from "express";
 import { random, authentication } from "../helpers";
 import AuthService from "../services/authService";
 import jsonWebToken from "jsonwebtoken";
+import ResponseHelper from "../helpers/responseHelper";
 export default class AuthController {
   static async login(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -9,17 +10,11 @@ export default class AuthController {
 
       const data = await AuthService.login(email, password);
 
-      if (!data.status.success) {
-        res.status(401).json(data);
-        return;
-      }
-
-      const user = data.data;
-
       const token = jsonWebToken.sign(
         {
-          username: user.username,
-          email: user.email,
+          username: data.username,
+          email: data.email,
+          user_id: data._id,
         },
         process.env.JWT_SECRET,
         {
@@ -32,7 +27,7 @@ export default class AuthController {
         path: "/",
       });
 
-      res.status(200).json(data);
+      ResponseHelper.sendSuccessResponse(res, data);
     } catch (error) {
       console.error(error);
       next(error);
@@ -45,18 +40,11 @@ export default class AuthController {
 
       const data = await AuthService.register(username, email, password);
 
-      if (!data.status.success) {
-        res.status(401).json(data);
-        return;
-      }
-
-      const user = data.data;
-
       const token = jsonWebToken.sign(
         {
-          username: user.username,
-          email: user.email,
-          user_id: user._id,
+          username: data.username,
+          email: data.email,
+          user_id: data._id,
         },
         process.env.JWT_SECRET,
         {
@@ -69,7 +57,7 @@ export default class AuthController {
         path: "/",
       });
 
-      res.status(200).json(data);
+      ResponseHelper.sendSuccessResponse(res, data);
     } catch (error) {
       console.error(error);
       next(error);
@@ -82,11 +70,7 @@ export default class AuthController {
         domain: "localhost",
         path: "/",
       });
-      res.status(200).json({
-        status: {
-          success: true,
-        },
-      });
+      ResponseHelper.sendSuccessResponse(res, {});
     } catch (error) {
       console.error(error);
       next(error);

@@ -3,6 +3,7 @@ import UserService from "../services/userService";
 import { AuthRequest } from "types/auth";
 
 import CommunityService from "../services/communityService";
+import ResponseHelper from "../helpers/responseHelper";
 
 export default class CommunityController {
   static async createCommunity(req: AuthRequest, res: express.Response, next: express.NextFunction) {
@@ -31,34 +32,29 @@ export default class CommunityController {
       );
 
       const milestones_data = await CommunityService.createMilestones(
-        data.data._id,
+        data._id,
         milestones
       );
 
-      const milestone_ids = milestones_data.data.map(
+      const milestone_ids = milestones_data.map(
         (milestone: any) => milestone._id
       );
       const updated_data = await CommunityService.updateCommunityMilestones(
-        data.data._id,
+        data._id,
         milestone_ids
       );
 
-      await UserService.updateUserCommunities(admin_id, data.data._id);
+      await UserService.updateUserCommunities(admin_id, data._id);
 
       await Promise.all(
         member_ids.map((member_id) =>
-          UserService.updateUserCommunities(member_id, data.data._id)
+          UserService.updateUserCommunities(member_id, data._id)
         )
       );
 
-      data.data.milestone_ids = milestone_ids;
+      data.milestone_ids = milestone_ids;
 
-      if (!data.status.success) {
-        res.status(401).json(data);
-        return;
-      }
-
-      res.status(200).json(data);
+      ResponseHelper.sendSuccessResponse(res, data);
     } catch (error) {
       console.error(error);
       next(error);
@@ -73,12 +69,7 @@ export default class CommunityController {
 
       const data = await CommunityService.getCommunityHome(communities_ids);
 
-      if (!data.status.success) {
-        res.status(401).json(data);
-        return;
-      }
-
-      res.status(200).json(data);
+      ResponseHelper.sendSuccessResponse(res, data);
     } catch (error) {
       console.error(error);
       next(error);
