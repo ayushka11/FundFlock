@@ -5,16 +5,14 @@ import verifyToken from "../middlewares/authentication";
 import { errorHandlingMiddleware } from "../middlewares/errorHandlingMiddleware";
 
 export default (router: express.Router) => {
-  router.post(
-    "/community/create",
-    verifyToken,
-    CommunityController.createCommunity,
-    errorHandlingMiddleware
-  );
-  router.get(
-    "/community/home",
-    verifyToken,
-    CommunityController.getCommunityHome,
-    errorHandlingMiddleware
-  );
+  const communityRouter = express.Router();
+
+  communityRouter.use(verifyToken);
+
+  communityRouter.post("/create", CommunityController.createCommunity);
+  communityRouter.get("/home", CommunityController.getCommunityHome);
+
+  communityRouter.use(errorHandlingMiddleware);
+
+  router.use("/community", communityRouter);
 };

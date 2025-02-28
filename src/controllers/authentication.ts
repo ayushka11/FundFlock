@@ -75,4 +75,21 @@ export default class AuthController {
       next(error);
     }
   }
+
+  static async logout(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      res.clearCookie("token", {
+        domain: "localhost",
+        path: "/",
+      });
+      res.status(200).json({
+        status: {
+          success: true,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
 }
