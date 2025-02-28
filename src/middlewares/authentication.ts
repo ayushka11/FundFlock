@@ -15,7 +15,14 @@ const verifyToken = (
   const token = req.cookies?.token;
 
   if (!token) {
-    res.status(403).json({ message: "Token not found, access denied" });
+    const data = {
+      status: {
+        success: false,
+        error: "Token not found, access denied",
+      },
+      data: {},
+    }
+    res.status(403).json(data);
     return;
   }
 
@@ -24,7 +31,14 @@ const verifyToken = (
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid or expired token" });
+    const data = {
+      status: {
+        success: false,
+        error: "Invalid token, access denied",
+      },
+      data: {},
+    }
+    res.status(403).json(data);
   }
 };
 

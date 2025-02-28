@@ -19,6 +19,7 @@ export default class CommunityController {
       const admin_id = await UserService.getUserId(req.user.username);
 
       const member_ids = await UserService.getUserIds(members_usernames);
+      member_ids.push(admin_id);
 
       const data = await CommunityService.createCommunity(
         community_name,

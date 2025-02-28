@@ -56,6 +56,7 @@ export default class AuthController {
         {
           username: user.username,
           email: user.email,
+          user_id: user._id,
         },
         process.env.JWT_SECRET,
         {

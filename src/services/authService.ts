@@ -32,7 +32,7 @@ export default class AuthService {
         return {
           status: {
             success: false,
-            error: "incorrect password",
+            error: "incorrect email or password",
           },
           data: {},
         };

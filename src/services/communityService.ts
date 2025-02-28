@@ -131,13 +131,13 @@ export default class CommunityService {
 
   static async getCommunityHome(communities_ids: string[]): Promise<any> {
     try {
-      const communities = await Promise.all(
+      const community_info = await Promise.all(
         communities_ids.map((community_id) =>
           CommunityClient.getCommunity(community_id)
         )
       );
 
-      const data = communities.map((community) => {
+      const communities = community_info.map((community) => {
         return {
           community_name: community.community_name,
           description: community.description,
@@ -149,7 +149,7 @@ export default class CommunityService {
       });
 
       const today = new Date();
-      data.forEach((community) => {
+      communities.forEach((community) => {
         const expiring_date = new Date(community.expiring_date);
         if (today > expiring_date) {
           community.status = "expired";
@@ -157,7 +157,10 @@ export default class CommunityService {
           community.status = "active";
         }
       });
-      console.log(data);
+      
+      const data = {
+        communities: communities,
+      };
 
       return {
         status: {
