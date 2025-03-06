@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes'
 import communityRoutes from './routes/communityRoutes'
 import transactionRoutes from "./routes/transactionRoutes";
 import milestoneRoutes from "./routes/milestoneRoutes";
+import profileRoutes from "./routes/profileRoutes";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use('/api/users',userRoutes);
 app.use('/api/communities',communityRoutes);
 app.use("/api/milestones", milestoneRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use('/api/profile', profileRoutes);
 
 
 // ✅ Connect to MongoDB and Start Server

@@ -54,3 +54,51 @@ export const getUserById: RequestHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch user", details: error.message });
   }
 };
+
+export const getUserProfile: RequestHandler = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.user_id, 10); // Convert user_id to number
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid user ID. Must be a number." });
+    }
+
+    const user = await User.findOne({ user_id: userId }).select("-password"); // Exclude password
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ error: "Failed to fetch user profile", details: error.message });
+  }
+};
+
+export const updateUserProfile: RequestHandler = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.user_id, 10);
+    const { username, email } = req.body;
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid user ID." });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { user_id: userId },
+      { username, email },
+      { new: true, runValidators: true }
+    ).select("-password"); // Exclude password
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    res.status(500).json({ error: "Failed to update profile", details: error.message });
+  }
+};
+
