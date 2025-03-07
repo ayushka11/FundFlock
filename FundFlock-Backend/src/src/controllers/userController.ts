@@ -1,16 +1,29 @@
 import { Request, Response, RequestHandler } from "express";
-import { User } from "../models/User";
+import { User } from "../models/User"; // Import User model
 import bcrypt from "bcryptjs";
 
+/**
+ * @desc Create User Profile
+ * @route POST /api/users/register
+ */
 export const registerUser: RequestHandler = async (req, res) => {
   try {
-    const { username, email, password, communities_id } = req.body;
+    const { username, email, pin } = req.body;
+
+    // Hash PIN before saving
+    const hashedPin = await bcrypt.hash(pin, 10);
+
+    // Get the last user_id and increment for new user
+    const lastUser = await User.findOne().sort({ user_id: -1 });
+    const newUserId = lastUser ? lastUser.user_id + 1 : 1;
 
     const newUser = new User({
+      user_id: newUserId,
       username,
       email,
-      password,
-      communities_id
+      pin: hashedPin,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     const savedUser = await newUser.save();
@@ -21,49 +34,19 @@ export const registerUser: RequestHandler = async (req, res) => {
   }
 };
 
-export const getUsers: RequestHandler = async (req, res) => {
-  try {
-    console.log("herererrererer")
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Failed to fetch users", details: error.message });
-  }
-};
-
-export const getUserById: RequestHandler = async (req, res) => {
-  try {
-    const userId = parseInt(req.params.user_id, 10); // Ensure it's a number
-
-    if (isNaN(userId)) {
-      res.status(400).json({ error: "Invalid user ID. It must be a number." });
-      return;
-    }
-
-    const user = await User.findOne({ user_id: userId });
-
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ error: "Failed to fetch user", details: error.message });
-  }
-};
-
+/**
+ * @desc Get User Profile by ID
+ * @route GET /api/users/:user_id
+ */
 export const getUserProfile: RequestHandler = async (req, res) => {
   try {
-    const userId = parseInt(req.params.user_id, 10); // Convert user_id to number
+    const userId = parseInt(req.params.user_id, 10);
 
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid user ID. Must be a number." });
     }
 
-    const user = await User.findOne({ user_id: userId }).select("-password"); // Exclude password
+    const user = await User.findOne({ user_id: userId }).select("-pin"); // Exclude PIN
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -76,10 +59,14 @@ export const getUserProfile: RequestHandler = async (req, res) => {
   }
 };
 
-export const updateUserProfile: RequestHandler = async (req, res) => {
+/**
+ * @desc Update User Email
+ * @route PUT /api/users/:user_id/email
+ */
+export const updateUserEmail: RequestHandler = async (req, res) => {
   try {
     const userId = parseInt(req.params.user_id, 10);
-    const { username, email } = req.body;
+    const { email } = req.body;
 
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid user ID." });
@@ -87,9 +74,9 @@ export const updateUserProfile: RequestHandler = async (req, res) => {
 
     const updatedUser = await User.findOneAndUpdate(
       { user_id: userId },
-      { username, email },
+      { email, updated_at: new Date() },
       { new: true, runValidators: true }
-    ).select("-password"); // Exclude password
+    ).select("-pin"); // Exclude PIN
 
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
@@ -97,8 +84,7 @@ export const updateUserProfile: RequestHandler = async (req, res) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.error("Error updating user profile:", error);
-    res.status(500).json({ error: "Failed to update profile", details: error.message });
+    console.error("Error updating user email:", error);
+    res.status(500).json({ error: "Failed to update email", details: error.message });
   }
 };
-
