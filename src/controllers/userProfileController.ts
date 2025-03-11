@@ -1,83 +1,62 @@
-import { Request, Response, RequestHandler } from "express";
-import User from "../models/userProfile"; // Ensure correct import
-import mongoose from "mongoose";
+import express from "express";
+import UserProfileService from "../services/userProfileService";
+import ResponseHelper from "../helpers/responseHelper";
 
-/**
- * @desc Create User Profile (Register)
- */
-export const registerUser: RequestHandler = async (req, res): Promise<void> => {
-  try {
-    const { username, email, authentication } = req.body;
+export default class UserProfileController {
+  static async registerUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { username, email, password } = req.body;
 
-    if (!authentication || !authentication.password) {
-      res.status(400).json({ error: "Password is required" });
-      return;
+      if (!username || !email || !password) {
+        return ResponseHelper.sendErrorResponse(res, "Missing required fields", 400);
+      }
+
+      const user = await UserProfileService.createUser(username, email, password);
+      return ResponseHelper.sendSuccessResponse(res, user, 201);
+    } catch (error) {
+      console.error(error);
+      next(error);
     }
-
-    const newUser = new User({
-      username,
-      email,
-      authentication: { password: authentication.password }
-    });
-
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
-  } catch (error: any) {
-    res.status(500).json({ error: "Failed to register user", details: error.message });
   }
-};
 
-/**
- * @desc Get User Profile by ID
- */
-export const getUserProfile: RequestHandler = async (req, res): Promise<void> => {
-  try {
-    const { id } = req.params; // Use _id instead of user_id
+  static async getUserProfile(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ error: "Invalid user ID" });
-      return;
+      if (!id) {
+        return ResponseHelper.sendErrorResponse(res, "User ID is required", 400);
+      }
+
+      const user = await UserProfileService.getUserById(id);
+      if (!user) {
+        return ResponseHelper.sendErrorResponse(res, "User not found", 404);
+      }
+
+      return ResponseHelper.sendSuccessResponse(res, user);
+    } catch (error) {
+      console.error(error);
+      next(error);
     }
-
-    const user = await User.findById(id);
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-
-    res.status(200).json(user);
-  } catch (error: any) {
-    res.status(500).json({ error: "Failed to fetch user profile", details: error.message });
   }
-};
 
-/**
- * @desc Update User Email
- */
-export const updateUserEmail: RequestHandler = async (req, res): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const { email } = req.body;
+  static async updateUserEmail(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+      const { id } = req.params;
+      const { email } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ error: "Invalid user ID" });
-      return;
+      if (!id || !email) {
+        return ResponseHelper.sendErrorResponse(res, "User ID and new email are required", 400);
+      }
+
+      const updatedUser = await UserProfileService.updateUserEmail(id, email);
+      if (!updatedUser) {
+        return ResponseHelper.sendErrorResponse(res, "User not found", 404);
+      }
+
+      return ResponseHelper.sendSuccessResponse(res, updatedUser);
+    } catch (error) {
+      console.error(error);
+      next(error);
     }
-
-    if (!email) {
-      res.status(400).json({ error: "Email is required" });
-      return;
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(id, { email }, { new: true });
-
-    if (!updatedUser) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-
-    res.status(200).json(updatedUser);
-  } catch (error: any) {
-    res.status(500).json({ error: "Failed to update email", details: error.message });
   }
-};
+}

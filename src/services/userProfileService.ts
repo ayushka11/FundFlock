@@ -1,37 +1,42 @@
-import User from "../models/userProfile";
-import mongoose from "mongoose";
+import UserProfileClient from "../clients/userProfileClient";
 
-/**
- * @desc Create a new user
- */
-export const createUser = async (username: string, email: string, password: string) => {
-  const newUser = new User({
-    username,
-    email,
-    authentication: { password }, // 🔹 Store password inside `authentication`
-  });
-
-  return await newUser.save();
-};
-
-/**
- * @desc Get user by ID (MongoDB ObjectId as string)
- */
-export const getUserById = async (user_id: string) => {
-  if (!mongoose.Types.ObjectId.isValid(user_id)) {
-    throw new Error("Invalid user ID format");
+export default class UserProfileService {
+  /**
+   * @desc Register a new user
+   */
+  static async createUser(username: string, email: string, password: string): Promise<any> {
+    try {
+      const newUser = await UserProfileClient.createUser(username, email, password);
+      return newUser;
+    } catch (error) {
+      console.error("Error in createUser Service:", error);
+      throw error;
+    }
   }
 
-  return await User.findById(user_id);
-};
-
-/**
- * @desc Update user's email by ID
- */
-export const updateUserEmailById = async (user_id: string, email: string) => {
-  if (!mongoose.Types.ObjectId.isValid(user_id)) {
-    throw new Error("Invalid user ID format");
+  /**
+   * @desc Get user by ID
+   */
+  static async getUserById(userId: string): Promise<any> {
+    try {
+      const user = await UserProfileClient.getUserById(userId);
+      return user;
+    } catch (error) {
+      console.error("Error in getUserById Service:", error);
+      throw error;
+    }
   }
 
-  return await User.findByIdAndUpdate(user_id, { email }, { new: true });
-};
+  /**
+   * @desc Update user email
+   */
+  static async updateUserEmail(userId: string, email: string): Promise<any> {
+    try {
+      const updatedUser = await UserProfileClient.updateUserEmail(userId, email);
+      return updatedUser;
+    } catch (error) {
+      console.error("Error in updateUserEmail Service:", error);
+      throw error;
+    }
+  }
+}
