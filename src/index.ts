@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import router from "./router";
+import userProfileRoutes from "./router/userProfileRoutes"; 
 
 dotenv.config();
 
@@ -29,7 +30,7 @@ server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-const MONGO_URL = process.env.MONGO_URL;
+const MONGO_URL = process.env.MONGO_URL || "";
 
 if (!MONGO_URL) {
   throw new Error("MONGO_URL is not defined in .env");
@@ -41,4 +42,8 @@ mongoose.connection.on("error", (error) => {
   console.error(error);
 });
 
+// Use the main router
 app.use("/", router());
+
+// Use user profile routes
+app.use("/api/users", userProfileRoutes);
