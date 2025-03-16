@@ -5,6 +5,7 @@ import 'login_page.dart';
 
 void main() {
   runApp(const RegistrationPage());
+
 }
 
 class RegistrationPage extends StatelessWidget {
