@@ -68,4 +68,22 @@ export default class CommunityClient {
       milestones.map((milestone) => milestone.toObject())
     );
   }
+
+  static async getMilestone(milestone_id: string): Promise<any> {
+    return MilestoneModel.findOne({ _id: milestone_id }).then((milestone) =>
+      milestone.toObject()
+    );
+  }
+
+  static async updateMilestone(
+    milestone_id: string,
+    achieved_amount: number,
+    status: string
+  ): Promise<any> {
+    return MilestoneModel.findOneAndUpdate(
+      { _id: milestone_id },
+      { achieved_amount, status, updatedAt: Date.now() },
+      { new: true }
+    ).then((milestone: any) => milestone.toObject());
+  }
 }

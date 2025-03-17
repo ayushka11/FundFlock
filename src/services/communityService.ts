@@ -172,4 +172,68 @@ export default class CommunityService {
       throw error;
     }
   }
+
+  static async getMilestoneAmount(milestone_id: string): Promise<any> {
+    try {
+      if (!milestone_id) {
+        throw new CustomError("missing required fields", 400);
+      }
+
+      const milestone = await CommunityClient.getMilestone(milestone_id);
+
+      return milestone.target_amount;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getMilestoneAchievedAmount(milestone_id: string): Promise<any> {
+    try {
+      if (!milestone_id) {
+        throw new CustomError("missing required fields", 400);
+      }
+
+      const milestone = await CommunityClient.getMilestone(milestone_id);
+
+      return milestone.achieved_amount;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateMilestone(
+    milestone_id: string,
+    amount: number
+  ): Promise<any> { 
+    try {
+      if (!milestone_id || !amount) {
+        throw new CustomError("missing required fields", 400);
+      }
+
+      const milestone = await CommunityClient.getMilestone(milestone_id);
+      if (!milestone) {
+        throw new CustomError("Milestone not found", 404);
+      }
+
+      let target_amount = Number(milestone.target_amount);
+      let achieved_amount = Number(milestone.achieved_amount);
+
+      let status = milestone.status; 
+      if (achieved_amount + amount == target_amount) {
+        status = "completed";
+      }
+
+      amount = Number(achieved_amount) + Number(amount);
+
+      const data = await CommunityClient.updateMilestone(
+        milestone_id,
+        amount, 
+        status
+      );
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
