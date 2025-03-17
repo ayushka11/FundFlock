@@ -1,5 +1,5 @@
 import express, { RequestHandler } from "express";
-import { random, authentication } from "../helpers";
+import { random, authentication } from "../helpers/app";
 import AuthService from "../services/authService";
 import jsonWebToken from "jsonwebtoken";
 import ResponseHelper from "../helpers/responseHelper";

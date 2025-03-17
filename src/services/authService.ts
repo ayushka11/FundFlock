@@ -1,5 +1,5 @@
 import UserClient from "../clients/userClient";
-import { random, authentication } from "../helpers";
+import { random, authentication } from "../helpers/app";
 import CustomError from "../middlewares/errorHandlingMiddleware";
 
 export default class AuthService {
