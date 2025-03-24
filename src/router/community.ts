@@ -1,4 +1,4 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 
 import CommunityController from "../controllers/community";
 import verifyToken from "../middlewares/authentication";
@@ -12,6 +12,7 @@ export default (router: express.Router) => {
   communityRouter.post("/create", CommunityController.createCommunity);
   communityRouter.get("/home", CommunityController.getCommunityHome);
   communityRouter.get("/details/:community_id", CommunityController.getCommunityDetails);
+  communityRouter.put("/bulk-update-status", CommunityController.bulkUpdateCommunityStatus);
 
   communityRouter.use(errorHandlingMiddleware);
 

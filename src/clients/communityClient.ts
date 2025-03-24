@@ -68,4 +68,17 @@ export default class CommunityClient {
       milestones.map((milestone) => milestone.toObject())
     );
   }
+
+  static async bulkUpdateCommunityStatus(communityIds: string[], status: string) {
+    try {
+      return await CommunityModel.updateMany(
+        { _id: { $in: communityIds } },
+        { $set: { status, updated_at: new Date() } }
+      );
+    } catch (error) {
+      console.error("❌ Error in bulkUpdateCommunityStatus:", error);
+      throw error;
+    }
+  }
+  
 }

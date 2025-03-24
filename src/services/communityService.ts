@@ -1,8 +1,13 @@
+import CommunityModel from "../models/communities";
 import CommunityClient from "../clients/communityClient";
 import UserClient from "../clients/userClient";
 import CustomError from "../middlewares/errorHandlingMiddleware";
 
 export default class CommunityService {
+  static async getAllCommunities() {
+    return await CommunityModel.find({});
+  }
+
   static async createCommunity(
     community_name: string,
     description: string,
@@ -172,4 +177,19 @@ export default class CommunityService {
       throw error;
     }
   }
+
+  static async bulkUpdateCommunityStatus(communityIds: string[], status: string) {
+    try {
+      const result = await CommunityModel.updateMany(
+        { _id: { $in: communityIds } }, // Find communities with matching IDs
+        { $set: { status, updated_at: new Date() } } // Update status and timestamp
+      );
+  
+      return { modifiedCount: result.modifiedCount }; // ✅ Return an object with modifiedCount
+    } catch (error) {
+      console.error("❌ Error updating community statuses:", error);
+      throw error;
+    }
+  }  
+  
 }
