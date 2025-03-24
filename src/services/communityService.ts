@@ -152,6 +152,18 @@ export default class CommunityService {
         };
       });
 
+      const created_at = new Date(community.created_at);
+      const today = new Date();
+      const expiringDate = new Date(community.expiring_date);
+      
+      const daysElapsed = Math.max(Math.floor((today.getTime() - created_at.getTime()) / (1000 * 60 * 60 * 24)), 1);
+
+      const daysRemaining = Math.max(Math.ceil((expiringDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)), 1);
+
+      const currentRateOfInflow = community.current_amount / daysElapsed;
+      const remainingAmount = community.net_fund_amt - community.current_amount;
+      const requiredRateOfInflow = remainingAmount / daysRemaining;
+
       const data = {
         community_id: community._id,
         community_name: community.community_name,
@@ -165,6 +177,8 @@ export default class CommunityService {
         current_amount: community.current_amount,
         expiring_date: community.expiring_date,
         milestones: milestones,
+        current_rate_of_inflow: currentRateOfInflow.toFixed(2),
+        required_rate_of_inflow: requiredRateOfInflow.toFixed(2)
       };
 
       return data;
