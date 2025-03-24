@@ -86,4 +86,15 @@ export default class CommunityClient {
       { new: true }
     ).then((milestone: any) => milestone.toObject());
   }
+
+  static async updateCommunityAmount(
+    community_id: string,
+    current_amount: number
+  ): Promise<any> {
+    return CommunityModel.findOneAndUpdate(
+      { _id: community_id },
+      { current_amount, updatedAt: Date.now() },
+      { new: true }
+    ).then((community) => community.toObject());
+  }
 }

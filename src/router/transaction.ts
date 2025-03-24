@@ -10,6 +10,8 @@ export default (router: express.Router) => {
     transactionRouter.use(verifyToken);
 
     transactionRouter.post("/create", TransactionController.createTransaction);
+    transactionRouter.get("/getAllUserTransactions", TransactionController.getTransactionsByUser);
+    //transactionRouter.get("/getAllCommunityTransactions", TransactionController.getTransactionsByCommunity);
 
     transactionRouter.use(errorHandlingMiddleware);
 

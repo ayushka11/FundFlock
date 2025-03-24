@@ -236,4 +236,32 @@ export default class CommunityService {
       throw error;
     }
   }
+
+  static async updateCommunityAmount(
+    community_id: string, 
+    amount: number
+  ): Promise<any> {
+    try {
+      if (!community_id || !amount) {
+        throw new CustomError("missing required fields", 400);
+      }
+
+      const community = await CommunityClient.getCommunity(community_id);
+      if (!community) {
+        throw new CustomError("Community not found", 404);
+      }
+
+      let current_amount = Number(community.current_amount);
+      current_amount = Number(current_amount) + Number(amount);
+
+      const data = await CommunityClient.updateCommunityAmount(
+        community_id,
+        current_amount
+      );
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
