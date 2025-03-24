@@ -204,7 +204,7 @@ export default class CommunityService {
   static async updateMilestone(
     milestone_id: string,
     amount: number
-  ): Promise<any> { 
+  ): Promise<any> {
     try {
       if (!milestone_id || !amount) {
         throw new CustomError("missing required fields", 400);
@@ -218,7 +218,7 @@ export default class CommunityService {
       let target_amount = Number(milestone.target_amount);
       let achieved_amount = Number(milestone.achieved_amount);
 
-      let status = milestone.status; 
+      let status = milestone.status;
       if (achieved_amount + amount == target_amount) {
         status = "completed";
       }
@@ -227,7 +227,7 @@ export default class CommunityService {
 
       const data = await CommunityClient.updateMilestone(
         milestone_id,
-        amount, 
+        amount,
         status
       );
 
@@ -238,7 +238,7 @@ export default class CommunityService {
   }
 
   static async updateCommunityAmount(
-    community_id: string, 
+    community_id: string,
     amount: number
   ): Promise<any> {
     try {

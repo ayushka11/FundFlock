@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import router from "./router/app";
-import userProfileRoutes from "./router/userProfileRoutes"; 
+import userProfileRoutes from "./router/userProfileRoutes";
 
 dotenv.config();
 

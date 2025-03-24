@@ -4,7 +4,11 @@ import AuthService from "../services/authService";
 import jsonWebToken from "jsonwebtoken";
 import ResponseHelper from "../helpers/responseHelper";
 export default class AuthController {
-  static async login(req: express.Request, res: express.Response, next: express.NextFunction) {
+  static async login(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
       const { email, password } = req.body;
 
@@ -34,7 +38,11 @@ export default class AuthController {
     }
   }
 
-  static async register(req: express.Request, res: express.Response, next: express.NextFunction) {
+  static async register(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
       const { username, email, password } = req.body;
 
@@ -64,7 +72,11 @@ export default class AuthController {
     }
   }
 
-  static async logout(req: express.Request, res: express.Response, next: express.NextFunction) {
+  static async logout(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
       res.clearCookie("token", {
         domain: "localhost",

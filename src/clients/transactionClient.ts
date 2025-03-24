@@ -1,11 +1,13 @@
 import TransactionModel from "../models/transactions";
 import CommunityModel from "../models/communities";
+import UserModel from "../models/users";
 import { v4 as uuidv4 } from "uuid";
 import { ObjectId } from "mongoose";
 
 interface TransactionResponse {
   transaction_id: string;
-  community_name: string;
+  community_name?: string;
+  username?: string;
   amount: number;
 }
 
@@ -62,6 +64,42 @@ export default class TransactionClient {
       return transactions.map((txn) => ({
         transaction_id: txn.transaction_id,
         community_name: communityMap[txn.community_id.toString()] || "Unknown",
+        amount: txn.amount,
+      }));
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      throw error;
+    }
+  }
+
+  static async getTransactionsByCommunity(
+    community_id: string
+  ): Promise<TransactionResponse[]> {
+    try {
+      const transactions = await TransactionModel.find({ community_id })
+        .select("transaction_id user_id amount")
+        .lean();
+
+      if (transactions.length === 0) return [];
+
+      const userIds = transactions.map(
+        (txn) => txn.user_id as unknown as ObjectId
+      );
+
+      const users = await UserModel.find({
+        _id: { $in: userIds },
+      })
+        .select("_id username")
+        .lean();
+
+      const userMap: Record<string, string> = {};
+      users.forEach((user) => {
+        userMap[user._id.toString()] = user.username;
+      });
+
+      return transactions.map((txn) => ({
+        transaction_id: txn.transaction_id,
+        username: userMap[txn.user_id.toString()] || "Unknown",
         amount: txn.amount,
       }));
     } catch (error) {
