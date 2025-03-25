@@ -13,6 +13,10 @@ export default (router: express.Router) => {
   communityRouter.get("/home", CommunityController.getCommunityHome);
   communityRouter.get("/details/:community_id", CommunityController.getCommunityDetails);
   communityRouter.put("/bulk-update-status", CommunityController.bulkUpdateCommunityStatus);
+  communityRouter.get(
+    "/details/:community_id",
+    CommunityController.getCommunityDetails
+  );
 
   communityRouter.use(errorHandlingMiddleware);
 

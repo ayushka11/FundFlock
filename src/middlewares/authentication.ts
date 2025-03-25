@@ -21,7 +21,7 @@ const verifyToken = (
         error: "Token not found, access denied",
       },
       data: {},
-    }
+    };
     res.status(403).json(data);
     return;
   }
@@ -37,7 +37,7 @@ const verifyToken = (
         error: "Invalid token, access denied",
       },
       data: {},
-    }
+    };
     res.status(403).json(data);
   }
 };

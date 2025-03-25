@@ -8,13 +8,13 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import "./helpers/cronJobs";
-import router from "./router";
-import userProfileRoutes from "./router/userProfileRoutes";
 import communityRoutes from "./router/community";
 import "./models/users";
 import "./models/communities";
 import "./models/userProfile";
 import "./models/milestones";
+import router from "./router/app";
+import userProfileRoutes from "./router/userProfileRoutes";
 
 dotenv.config();
 
@@ -33,8 +33,10 @@ app.use(cookieParser());
 
 const server = http.createServer(app);
 
-server.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const port = process.env.PORT || 3000;
+
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 const MONGO_URL = process.env.MONGO_URL || "";

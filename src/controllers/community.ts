@@ -6,7 +6,11 @@ import CommunityService from "../services/communityService";
 import ResponseHelper from "../helpers/responseHelper";
 
 export default class CommunityController {
-  static async createCommunity(req: AuthRequest, res: express.Response, next: express.NextFunction) {
+  static async createCommunity(
+    req: AuthRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
       const {
         community_name,
@@ -61,7 +65,11 @@ export default class CommunityController {
     }
   }
 
-  static async getCommunityHome(req: AuthRequest, res: express.Response, next: express.NextFunction) {
+  static async getCommunityHome(
+    req: AuthRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
       const user_id = await UserService.getUserId(req.user.username);
 
@@ -76,7 +84,11 @@ export default class CommunityController {
     }
   }
 
-  static async getCommunityDetails(req: AuthRequest, res: express.Response, next: express.NextFunction) {
+  static async getCommunityDetails(
+    req: AuthRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
       const { community_id } = req.params;
 

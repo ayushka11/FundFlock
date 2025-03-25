@@ -47,7 +47,7 @@ export default class UserClient {
     });
   }
 
-  static async getUsernameById (id: string): Promise<any> {
+  static async getUsernameById(id: string): Promise<any> {
     return UserModel.findById(id).select("username");
   }
 }
