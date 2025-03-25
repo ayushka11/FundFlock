@@ -1,3 +1,4 @@
+import TransactionClient from "../clients/transactionClient";
 import CommunityClient from "../clients/communityClient";
 import UserClient from "../clients/userClient";
 import CustomError from "../middlewares/errorHandlingMiddleware";
@@ -129,6 +130,9 @@ export default class CommunityService {
       }
 
       const milestone_data = await CommunityClient.getMilestones(community_id);
+      const transactions = await TransactionClient.getTransactionsByCommunityId(
+        community_id
+      );
 
       const admin_username = await UserClient.getUsernameById(
         community.admin_id
@@ -155,14 +159,39 @@ export default class CommunityService {
       const created_at = new Date(community.created_at);
       const today = new Date();
       const expiringDate = new Date(community.expiring_date);
-      
-      const daysElapsed = Math.max(Math.floor((today.getTime() - created_at.getTime()) / (1000 * 60 * 60 * 24)), 1);
 
-      const daysRemaining = Math.max(Math.ceil((expiringDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)), 1);
+      const daysElapsed = Math.max(
+        Math.floor(
+          (today.getTime() - created_at.getTime()) / (1000 * 60 * 60 * 24)
+        ),
+        1
+      );
+
+      const daysRemaining = Math.max(
+        Math.ceil(
+          (expiringDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+        ),
+        1
+      );
 
       const currentRateOfInflow = community.current_amount / daysElapsed;
       const remainingAmount = community.net_fund_amt - community.current_amount;
       const requiredRateOfInflow = remainingAmount / daysRemaining;
+
+      const totalContributions: Record<string, number> = {};
+      for (const transaction of transactions) {
+        if (!totalContributions[transaction.user_id]) {
+          totalContributions[transaction.user_id] = 0;
+        }
+        totalContributions[transaction.user_id] += transaction.amount;
+      }
+
+      const memberContributions = await Promise.all(
+        Object.entries(totalContributions).map(async ([user_id, amount]) => {
+          const username = await UserClient.getUsernameById(user_id);
+          return { username: username.username, total_contribution: amount };
+        })
+      );
 
       const data = {
         community_id: community._id,
@@ -178,7 +207,8 @@ export default class CommunityService {
         expiring_date: community.expiring_date,
         milestones: milestones,
         current_rate_of_inflow: currentRateOfInflow.toFixed(2),
-        required_rate_of_inflow: requiredRateOfInflow.toFixed(2)
+        required_rate_of_inflow: requiredRateOfInflow.toFixed(2),
+        member_contributions: memberContributions
       };
 
       return data;

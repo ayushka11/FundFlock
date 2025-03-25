@@ -107,4 +107,13 @@ export default class TransactionClient {
       throw error;
     }
   }
+
+  static async getTransactionsByCommunityId(community_id: string): Promise<any> {
+    try {
+      return TransactionModel.find({ community_id }).lean();
+    }
+    catch (error) {
+      throw error;
+    }
+  }
 }
