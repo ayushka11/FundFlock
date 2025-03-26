@@ -14,14 +14,12 @@ interface TransactionResponse {
 export default class TransactionClient {
   static async createTransaction(
     user_id: string,
-    milestone_id: string,
     community_id: string,
     amount: number
   ): Promise<any> {
     try {
       const transaction = new TransactionModel({
         user_id,
-        milestone_id,
         community_id,
         amount,
         created_at: new Date(),
@@ -104,6 +102,15 @@ export default class TransactionClient {
       }));
     } catch (error) {
       console.error("Error fetching transactions:", error);
+      throw error;
+    }
+  }
+
+  static async getTransactionsByCommunityId(community_id: string): Promise<any> {
+    try {
+      return TransactionModel.find({ community_id }).lean();
+    }
+    catch (error) {
       throw error;
     }
   }

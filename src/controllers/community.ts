@@ -48,8 +48,6 @@ export default class CommunityController {
         milestone_ids
       );
 
-      await UserService.updateUserCommunities(admin_id, data._id);
-
       await Promise.all(
         member_ids.map((member_id) =>
           UserService.updateUserCommunities(member_id, data._id)
