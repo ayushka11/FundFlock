@@ -75,18 +75,6 @@ export default class CommunityClient {
     );
   }
 
-  static async updateMilestone(
-    milestone_id: string,
-    achieved_amount: number,
-    status: string
-  ): Promise<any> {
-    return MilestoneModel.findOneAndUpdate(
-      { _id: milestone_id },
-      { achieved_amount, status, updatedAt: Date.now() },
-      { new: true }
-    ).then((milestone: any) => milestone.toObject());
-  }
-
   static async updateCommunityAmount(
     community_id: string,
     current_amount: number
@@ -96,5 +84,18 @@ export default class CommunityClient {
       { current_amount, updatedAt: Date.now() },
       { new: true }
     ).then((community) => community.toObject());
+  }
+
+  static async updateMilestone(
+    milestone_id: string,
+    achieved_amount: number,
+    status: string
+  ): Promise<any> {
+    console.log(milestone_id, achieved_amount, status);
+    return MilestoneModel.findOneAndUpdate(
+      { _id: milestone_id },
+      { achieved_amount, status, updatedAt: Date.now() },
+      { new: true }
+    ).then((milestone) => milestone.toObject());
   }
 }

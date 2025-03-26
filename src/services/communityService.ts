@@ -208,7 +208,7 @@ export default class CommunityService {
         milestones: milestones,
         current_rate_of_inflow: currentRateOfInflow.toFixed(2),
         required_rate_of_inflow: requiredRateOfInflow.toFixed(2),
-        member_contributions: memberContributions
+        member_contributions: memberContributions,
       };
 
       return data;
@@ -245,65 +245,61 @@ export default class CommunityService {
     }
   }
 
-  static async updateMilestone(
-    milestone_id: string,
-    amount: number
-  ): Promise<any> {
+  static async updateCommunityAmount(community_id: string, amount: number) {
     try {
-      if (!milestone_id || !amount) {
-        throw new CustomError("missing required fields", 400);
-      }
-
-      const milestone = await CommunityClient.getMilestone(milestone_id);
-      if (!milestone) {
-        throw new CustomError("Milestone not found", 404);
-      }
-
-      let target_amount = Number(milestone.target_amount);
-      let achieved_amount = Number(milestone.achieved_amount);
-
-      let status = milestone.status;
-      if (achieved_amount + amount == target_amount) {
-        status = "completed";
-      }
-
-      amount = Number(achieved_amount) + Number(amount);
-
-      const data = await CommunityClient.updateMilestone(
-        milestone_id,
-        amount,
-        status
-      );
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  static async updateCommunityAmount(
-    community_id: string,
-    amount: number
-  ): Promise<any> {
-    try {
-      if (!community_id || !amount) {
-        throw new CustomError("missing required fields", 400);
+      if (!community_id || isNaN(amount)) {
+        throw new CustomError("Missing required fields", 400);
       }
 
       const community = await CommunityClient.getCommunity(community_id);
-      if (!community) {
-        throw new CustomError("Community not found", 404);
+
+      if (amount > community.net_fund_amt - community.current_amount) {
+        throw new CustomError("Amount exceeds required amount", 400);
       }
 
-      let current_amount = Number(community.current_amount);
-      current_amount = Number(current_amount) + Number(amount);
+      const milestones = await CommunityClient.getMilestones(community_id);
 
-      const data = await CommunityClient.updateCommunityAmount(
-        community_id,
-        current_amount
+      let previous_amount = 0;
+      let toAdd = amount;
+
+      for (const milestone of milestones) {
+        milestone.required_amount = milestone.target_amount - previous_amount;
+        previous_amount = milestone.target_amount;
+      }
+
+      for (const milestone of milestones) {
+        if (toAdd <= 0) break;
+        let now_required = milestone.required_amount - milestone.achieved_amount;
+        if (now_required <= toAdd) {
+          milestone.achieved_amount += now_required;
+          toAdd -= now_required;
+        } else {
+          milestone.achieved_amount += toAdd;
+          toAdd = 0;
+        }
+        if (milestone.achieved_amount == milestone.required_amount) {
+          milestone.status = "completed";
+        }
+      }
+
+      console.log(milestones);
+
+      await Promise.all(
+        milestones.map((m: any) =>
+          CommunityClient.updateMilestone(
+            m._id,
+            Number(m.achieved_amount),
+            m.status
+          )
+        )
       );
 
-      return data;
+      await CommunityClient.updateCommunityAmount(
+        community_id,
+        Number(amount) + Number(community.current_amount)
+      );
+
+      return;
     } catch (error) {
       throw error;
     }
