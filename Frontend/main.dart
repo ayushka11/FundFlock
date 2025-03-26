@@ -4,7 +4,8 @@ import 'login_page.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'landing_page.dart';
-
+import 'community_page.dart';
+import 'add_transaction_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
             payloadMap['exp'] * 1000,
           );
           if (expiry.isBefore(DateTime.now())) {
-            await prefs.remove('jwt_token');
+            await prefs.remove('token');
             return false;
           }
         }

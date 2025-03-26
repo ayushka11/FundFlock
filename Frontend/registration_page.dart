@@ -5,7 +5,6 @@ import 'login_page.dart';
 
 void main() {
   runApp(const RegistrationPage());
-
 }
 
 class RegistrationPage extends StatelessWidget {
@@ -180,7 +179,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     children: [
                       SizedBox(
                         height: 60,
-                      ),
+                      ), // Replace ClipRRect with a placeholder
                       SizedBox(height: 12),
                       Text(
                         'Sign Up',

@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
-  bool _passwordVisible =  false;
+  bool _passwordVisible = false;
 
   @override
   void dispose() {
@@ -73,15 +73,15 @@ class _LoginScreenState extends State<LoginScreen> {
           print('Login successful: $responseBody');
           if (cookies != null) {
             final jwtToken = _extractJwtFromCookies(cookies);
-
+            final username = jsonDecode(responseBody)['data']['username'];
             if (jwtToken != null) {
               final prefs = await SharedPreferences.getInstance();
               await prefs.setString('token', jwtToken);
+              await prefs.setString('username', username);
             }
-
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Login successful!'),
+              SnackBar(
+                content: Text('Welcome back, $username!'),
                 backgroundColor: Colors.green,
               ),
             );
