@@ -52,8 +52,14 @@ export default class TransactionController {
   ) {
     try {
       const user_id = await UserService.getUserId(req.user.username);
+      const { page } = req.params;
+      const pageNumber = parseInt(page, 10);
+      if (isNaN(pageNumber) || pageNumber < 1) {
+        ResponseHelper.sendErrorResponse(res, "Invalid page number", 400);
+        return;
+      }
 
-      const data = await TransactionService.getTransactionsByUser(user_id);
+      const data = await TransactionService.getTransactionsByUser(user_id, pageNumber);
 
       ResponseHelper.sendSuccessResponse(res, data);
     } catch (error) {
@@ -69,9 +75,16 @@ export default class TransactionController {
   ) {
     try {
       const { community_id } = req.params;
+      const { page } = req.params;
+      const pageNumber = parseInt(page, 10);
+      if (isNaN(pageNumber) || pageNumber < 1) {
+        ResponseHelper.sendErrorResponse(res, "Invalid page number", 400);
+        return;
+      }
 
       const data = await TransactionService.getTransactionsByCommunity(
-        community_id
+        community_id,
+        pageNumber
       );
 
       ResponseHelper.sendSuccessResponse(res, data);
