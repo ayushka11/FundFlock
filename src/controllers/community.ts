@@ -98,4 +98,38 @@ export default class CommunityController {
       next(error);
     }
   }
+
+  static async updateCommunityExpiringDate(
+    req: AuthRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
+    try {
+      const { community_id } = req.params;
+      const { expiring_date } = req.body;
+      const user_id = await UserService.getUserId(req.user.username);
+      const isAdmin = await CommunityService.isUserAdmin(
+        community_id,
+        user_id
+      );
+      if (!isAdmin) {
+        ResponseHelper.sendErrorResponse(
+          res,
+          "You are not authorized to update the expiring date of this community",
+          403
+        );
+        return;
+      }
+
+      const data = await CommunityService.updateCommunityExpiringDate(
+        community_id,
+        expiring_date
+      );
+
+      ResponseHelper.sendSuccessResponse(res, data);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
 }

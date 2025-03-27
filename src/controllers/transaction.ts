@@ -21,6 +21,15 @@ export default class TransactionController {
         return;
       }
 
+      if (community.expiring_date < new Date()) {
+        ResponseHelper.sendErrorResponse(
+          res,
+          "Community has already expired",
+          400
+        );
+        return;
+      }
+
       if (amount > community.net_fund_amt - community.current_amount) {
         ResponseHelper.sendErrorResponse(
           res,

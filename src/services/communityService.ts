@@ -304,4 +304,51 @@ export default class CommunityService {
       throw error;
     }
   }
+
+  static async isUserAdmin(
+    community_id: string,
+    user_id: string
+  ): Promise<boolean> {
+    try {
+      if (!community_id || !user_id) {
+        throw new CustomError("missing required fields", 400);
+      }
+
+      const community = await CommunityClient.getCommunity(community_id);
+
+      if (community.admin_id !== String(user_id)) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateCommunityExpiringDate(
+    community_id: string,
+    expiring_date: string
+  ): Promise<any> {
+    try {
+      if (!community_id || !expiring_date) {
+        throw new CustomError("missing required fields", 400);
+      }
+
+      const community = await CommunityClient.getCommunity(community_id);
+
+      if (community.expiring_date < new Date()) {
+        throw new CustomError("Community has already expired", 400);
+      }
+
+      const data = await CommunityClient.updateCommunityExpiringDate(
+        community_id,
+        expiring_date
+      );
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
