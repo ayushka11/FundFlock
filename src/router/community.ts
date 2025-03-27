@@ -15,6 +15,7 @@ export default (router: express.Router) => {
     "/details/:community_id",
     CommunityController.getCommunityDetails
   );
+  communityRouter.post("/updateExpiringDate/:community_id", CommunityController.updateCommunityExpiringDate);
 
   communityRouter.use(errorHandlingMiddleware);
 

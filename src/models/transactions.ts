@@ -11,7 +11,6 @@ const TransactionSchema = new mongoose.Schema({
     required: true,
   },
   user_id: { type: String, required: true },
-  milestone_id: { type: String, required: true },
   community_id: { type: String, required: true },
   amount: { type: Number, required: true },
   created_at: { type: Date, required: true, default: Date.now },

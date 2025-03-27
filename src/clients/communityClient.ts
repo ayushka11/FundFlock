@@ -75,6 +75,17 @@ export default class CommunityClient {
     );
   }
 
+  static async updateCommunityAmount(
+    community_id: string,
+    current_amount: number
+  ): Promise<any> {
+    return CommunityModel.findOneAndUpdate(
+      { _id: community_id },
+      { current_amount, updatedAt: Date.now() },
+      { new: true }
+    ).then((community) => community.toObject());
+  }
+
   static async updateMilestone(
     milestone_id: string,
     achieved_amount: number,
@@ -84,16 +95,16 @@ export default class CommunityClient {
       { _id: milestone_id },
       { achieved_amount, status, updatedAt: Date.now() },
       { new: true }
-    ).then((milestone: any) => milestone.toObject());
+    ).then((milestone) => milestone.toObject());
   }
 
-  static async updateCommunityAmount(
+  static async updateCommunityExpiringDate(
     community_id: string,
-    current_amount: number
+    expiring_date: string
   ): Promise<any> {
     return CommunityModel.findOneAndUpdate(
       { _id: community_id },
-      { current_amount, updatedAt: Date.now() },
+      { expiring_date: new Date(expiring_date), updatedAt: Date.now() },
       { new: true }
     ).then((community) => community.toObject());
   }
