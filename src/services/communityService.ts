@@ -2,6 +2,7 @@ import CommunityModel from "../models/communities";
 import CommunityClient from "../clients/communityClient";
 import UserClient from "../clients/userClient";
 import CustomError from "../middlewares/errorHandlingMiddleware";
+import UserModel from "../models/users";
 
 export default class CommunityService {
   static async getAllCommunities() {
@@ -192,4 +193,7 @@ export default class CommunityService {
     }
   }  
   
+  static async getExpiringCommunities(expiryDate: Date) {
+    return await CommunityModel.find({ expiring_date: expiryDate });
+  }
 }
