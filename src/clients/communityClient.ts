@@ -69,22 +69,25 @@ export default class CommunityClient {
     );
   }
 
-  static async bulkUpdateCommunityStatus(communityIds: string[], status: string) {
-    try {
-      return await CommunityModel.updateMany(
-        { _id: { $in: communityIds } },
-        { $set: { status, updated_at: new Date() } }
-      );
-    } catch (error) {
-      console.error("❌ Error in bulkUpdateCommunityStatus:", error);
-      throw error;
-    }
+  static async updateMany(filter: object, update: object) {
+    return await CommunityModel.updateMany(filter, update);
   }
   
   static async getMilestone(milestone_id: string): Promise<any> {
     return MilestoneModel.findOne({ _id: milestone_id }).then((milestone) =>
       milestone.toObject()
     );
+  }
+
+  static async updateCommunityAmount(
+    community_id: string,
+    current_amount: number
+  ): Promise<any> {
+    return CommunityModel.findOneAndUpdate(
+      { _id: community_id },
+      { current_amount, updatedAt: Date.now() },
+      { new: true }
+    ).then((community) => community.toObject());
   }
 
   static async updateMilestone(
@@ -96,16 +99,16 @@ export default class CommunityClient {
       { _id: milestone_id },
       { achieved_amount, status, updatedAt: Date.now() },
       { new: true }
-    ).then((milestone: any) => milestone.toObject());
+    ).then((milestone) => milestone.toObject());
   }
 
-  static async updateCommunityAmount(
+  static async updateCommunityExpiringDate(
     community_id: string,
-    current_amount: number
+    expiring_date: string
   ): Promise<any> {
     return CommunityModel.findOneAndUpdate(
       { _id: community_id },
-      { current_amount, updatedAt: Date.now() },
+      { expiring_date: new Date(expiring_date), updatedAt: Date.now() },
       { new: true }
     ).then((community) => community.toObject());
   }

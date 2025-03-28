@@ -11,11 +11,11 @@ export default (router: express.Router) => {
 
   transactionRouter.post("/create", TransactionController.createTransaction);
   transactionRouter.get(
-    "/getAllUserTransactions",
+    "/getAllUserTransactions/:page",
     TransactionController.getTransactionsByUser
   );
   transactionRouter.get(
-    "/getAllCommunityTransactions/:community_id",
+    "/getAllCommunityTransactions/:community_id/:page",
     TransactionController.getTransactionsByCommunity
   );
 

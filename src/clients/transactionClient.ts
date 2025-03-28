@@ -14,14 +14,12 @@ interface TransactionResponse {
 export default class TransactionClient {
   static async createTransaction(
     user_id: string,
-    milestone_id: string,
     community_id: string,
     amount: number
   ): Promise<any> {
     try {
       const transaction = new TransactionModel({
         user_id,
-        milestone_id,
         community_id,
         amount,
         created_at: new Date(),
@@ -37,18 +35,25 @@ export default class TransactionClient {
   }
 
   static async getTransactionsByUser(
-    user_id: string
-  ): Promise<TransactionResponse[]> {
+    user_id: string,
+    pageNumber: number
+  ): Promise<{ transactions: TransactionResponse[]; isLastPage: boolean }> {
     try {
+      const pageSize = 10;
+      const skip = (pageNumber - 1) * pageSize;
+
       const transactions = await TransactionModel.find({ user_id })
         .select("transaction_id community_id amount")
+        .skip(skip)
+        .limit(pageSize + 1)
         .lean();
 
-      if (transactions.length === 0) return [];
+      if (transactions.length === 0)
+        return { transactions: [], isLastPage: true };
 
-      const communityIds = transactions.map(
-        (txn) => txn.community_id as unknown as ObjectId
-      );
+      const communityIds = transactions
+        .slice(0, pageSize)
+        .map((txn) => txn.community_id as unknown as ObjectId);
 
       const communities = await CommunityModel.find({
         _id: { $in: communityIds },
@@ -61,11 +66,17 @@ export default class TransactionClient {
         communityMap[community._id.toString()] = community.community_name;
       });
 
-      return transactions.map((txn) => ({
-        transaction_id: txn.transaction_id,
-        community_name: communityMap[txn.community_id.toString()] || "Unknown",
-        amount: txn.amount,
-      }));
+      const isLastPage = transactions.length <= pageSize;
+      const paginatedTransactions = transactions
+        .slice(0, pageSize)
+        .map((txn) => ({
+          transaction_id: txn.transaction_id,
+          community_name:
+            communityMap[txn.community_id.toString()] || "Unknown",
+          amount: txn.amount,
+        }));
+
+      return { transactions: paginatedTransactions, isLastPage };
     } catch (error) {
       console.error("Error fetching transactions:", error);
       throw error;
@@ -73,22 +84,27 @@ export default class TransactionClient {
   }
 
   static async getTransactionsByCommunity(
-    community_id: string
-  ): Promise<TransactionResponse[]> {
+    community_id: string,
+    pageNumber: number
+  ): Promise<{ transactions: TransactionResponse[]; isLastPage: boolean }> {
     try {
+      const pageSize = 10;
+      const skip = (pageNumber - 1) * pageSize;
+
       const transactions = await TransactionModel.find({ community_id })
         .select("transaction_id user_id amount")
+        .skip(skip)
+        .limit(pageSize + 1) // Fetch one extra record to check if there is another page
         .lean();
 
-      if (transactions.length === 0) return [];
+      if (transactions.length === 0)
+        return { transactions: [], isLastPage: true };
 
-      const userIds = transactions.map(
-        (txn) => txn.user_id as unknown as ObjectId
-      );
+      const userIds = transactions
+        .slice(0, pageSize)
+        .map((txn) => txn.user_id as unknown as ObjectId);
 
-      const users = await UserModel.find({
-        _id: { $in: userIds },
-      })
+      const users = await UserModel.find({ _id: { $in: userIds } })
         .select("_id username")
         .lean();
 
@@ -97,13 +113,28 @@ export default class TransactionClient {
         userMap[user._id.toString()] = user.username;
       });
 
-      return transactions.map((txn) => ({
-        transaction_id: txn.transaction_id,
-        username: userMap[txn.user_id.toString()] || "Unknown",
-        amount: txn.amount,
-      }));
+      const isLastPage = transactions.length <= pageSize;
+      const paginatedTransactions = transactions
+        .slice(0, pageSize)
+        .map((txn) => ({
+          transaction_id: txn.transaction_id,
+          username: userMap[txn.user_id.toString()] || "Unknown",
+          amount: txn.amount,
+        }));
+
+      return { transactions: paginatedTransactions, isLastPage };
     } catch (error) {
       console.error("Error fetching transactions:", error);
+      throw error;
+    }
+  }
+
+  static async getTransactionsByCommunityId(
+    community_id: string
+  ): Promise<any> {
+    try {
+      return TransactionModel.find({ community_id }).lean();
+    } catch (error) {
       throw error;
     }
   }

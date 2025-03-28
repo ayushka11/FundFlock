@@ -1,7 +1,8 @@
-import express, { NextFunction, RequestHandler } from "express";
+import express, { NextFunction } from "express";
+import { Request, Response, RequestHandler } from "express";
 import UserService from "../services/userService";
 import { AuthRequest } from "types/auth";
-
+import CustomError from "../middlewares/errorHandlingMiddleware";
 import CommunityService from "../services/communityService";
 import ResponseHelper from "../helpers/responseHelper";
 
@@ -47,8 +48,6 @@ export default class CommunityController {
         data._id,
         milestone_ids
       );
-
-      await UserService.updateUserCommunities(admin_id, data._id);
 
       await Promise.all(
         member_ids.map((member_id) =>
@@ -100,25 +99,57 @@ export default class CommunityController {
       next(error);
     }
   }
-  
-  static async bulkUpdateCommunityStatus(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+  static async updateCommunityExpiringDate(
+    req: AuthRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
     try {
-      // ✅ Explicitly define req.body structure
-      const { communityIds, status }: { communityIds: string[]; status: string } = req.body as any;
-  
-      if (!Array.isArray(communityIds) || communityIds.length === 0 || !status) {
-        return ResponseHelper.sendErrorResponse(res, "Invalid request data", 400);
+      const { community_id } = req.params;
+      const { expiring_date } = req.body;
+      const user_id = await UserService.getUserId(req.user.username);
+      const isAdmin = await CommunityService.isUserAdmin(
+        community_id,
+        user_id
+      );
+      if (!isAdmin) {
+        ResponseHelper.sendErrorResponse(
+          res,
+          "You are not authorized to update the expiring date of this community",
+          403
+        );
+        return;
       }
-  
+
+      const data = await CommunityService.updateCommunityExpiringDate(
+        community_id,
+        expiring_date
+      );
+
+      ResponseHelper.sendSuccessResponse(res, data);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
+  static async bulkUpdateCommunityStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const { communityIds, status } = req.body;
+
+      if (!communityIds || !Array.isArray(communityIds) || !status) {
+        throw new CustomError("Missing required fields: communityIds (array) and status (string)", 400);
+      }
+
       const result = await CommunityService.bulkUpdateCommunityStatus(communityIds, status);
-  
-      return ResponseHelper.sendSuccessResponse(res, {
-        message: "Community statuses updated successfully",
-        modifiedCount: result.modifiedCount, // ✅ Correct field
+
+      res.status(200).json({
+        message: `Updated ${result.modifiedCount} communities to status "${status}"`,
+        data: result,
       });
     } catch (error) {
-      console.error("❌ Error updating community statuses:", error);
-      return ResponseHelper.sendErrorResponse(res, "Failed to update community statuses", 500);
+      res.status(error.statusCode || 500).json({ error: error.message });
     }
   }
 }

@@ -1,6 +1,16 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-const userSchema = new mongoose.Schema(
+// Define the User schema
+interface IUser extends Document {
+  username: string;
+  email: string;
+  authentication?: {
+    password: string;
+  };
+}
+
+// Define schema
+const userSchema = new Schema<IUser>(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -11,7 +21,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Prevent model overwrite error
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+// Prevent model overwrite errors
+const UserModel: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
 
-export default User;
+export default UserModel;
