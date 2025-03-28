@@ -69,6 +69,10 @@ export default class CommunityClient {
     );
   }
 
+  static async updateMany(filter: object, update: object) {
+    return await CommunityModel.updateMany(filter, update);
+  }
+  
   static async getMilestone(milestone_id: string): Promise<any> {
     return MilestoneModel.findOne({ _id: milestone_id }).then((milestone) =>
       milestone.toObject()

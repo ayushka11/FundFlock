@@ -1,4 +1,5 @@
 import UserClient from "../clients/userClient";
+import User from "../models/users";
 
 export default class UserService {
   static async getUserId(username: string): Promise<string> {
@@ -43,5 +44,9 @@ export default class UserService {
     } catch (error) {
       throw error;
     }
+  }
+
+  static async getUserById(userId: string) {
+    return await User.findOne({ user_id: userId });
   }
 }

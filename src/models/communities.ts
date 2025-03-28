@@ -12,6 +12,12 @@ const communitySchema = new mongoose.Schema({
   expiring_date: { type: Date, required: true },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },
+  last_activity: { type: Date, default: null },
+  status: {
+    type: String,
+    enum: ["pending", "active", "completed", "dead"],
+    default: "pending",
+  },
 });
 
 export const CommunityModel = mongoose.model("Community", communitySchema);

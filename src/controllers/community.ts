@@ -1,7 +1,8 @@
-import express, { RequestHandler } from "express";
+import express, { NextFunction } from "express";
+import { Request, Response, RequestHandler } from "express";
 import UserService from "../services/userService";
 import { AuthRequest } from "types/auth";
-
+import CustomError from "../middlewares/errorHandlingMiddleware";
 import CommunityService from "../services/communityService";
 import ResponseHelper from "../helpers/responseHelper";
 
@@ -130,6 +131,25 @@ export default class CommunityController {
     } catch (error) {
       console.error(error);
       next(error);
+    }
+  }
+
+  static async bulkUpdateCommunityStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const { communityIds, status } = req.body;
+
+      if (!communityIds || !Array.isArray(communityIds) || !status) {
+        throw new CustomError("Missing required fields: communityIds (array) and status (string)", 400);
+      }
+
+      const result = await CommunityService.bulkUpdateCommunityStatus(communityIds, status);
+
+      res.status(200).json({
+        message: `Updated ${result.modifiedCount} communities to status "${status}"`,
+        data: result,
+      });
+    } catch (error) {
+      res.status(error.statusCode || 500).json({ error: error.message });
     }
   }
 }

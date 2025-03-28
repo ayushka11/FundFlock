@@ -2,8 +2,14 @@ import TransactionClient from "../clients/transactionClient";
 import CommunityClient from "../clients/communityClient";
 import UserClient from "../clients/userClient";
 import CustomError from "../middlewares/errorHandlingMiddleware";
+import UserModel from "../models/users";
+import CommunityModel from "../models/communities";
 
 export default class CommunityService {
+  static async getAllCommunities() {
+    return await CommunityModel.find({});
+  }
+
   static async createCommunity(
     community_name: string,
     description: string,
@@ -217,16 +223,23 @@ export default class CommunityService {
     }
   }
 
-  static async getMilestoneAmount(milestone_id: string): Promise<any> {
+  static async bulkUpdateCommunityStatus(communityIds: string[], status: string) {
     try {
-      if (!milestone_id) {
-        throw new CustomError("missing required fields", 400);
+      if (!communityIds || communityIds.length === 0) {
+        throw new CustomError("No community IDs provided", 400);
+      }
+      if (!status) {
+        throw new CustomError("Missing status", 400);
       }
 
-      const milestone = await CommunityClient.getMilestone(milestone_id);
+      const result = await CommunityClient.updateMany(
+        { _id: { $in: communityIds } }, // Find communities by their IDs
+        { $set: { status, updated_at: new Date() } } // Update status & timestamp
+      );
 
-      return milestone.target_amount;
+      return result; // Contains modifiedCount (number of communities updated)
     } catch (error) {
+      console.error("❌ Error in bulkUpdateCommunityStatus:", error);
       throw error;
     }
   }
@@ -344,7 +357,12 @@ export default class CommunityService {
 
       return data;
     } catch (error) {
+      console.error("❌ Error updating community statuses:", error);
       throw error;
     }
+  }  
+  
+  static async getExpiringCommunities(expiryDate: Date) {
+    return await CommunityModel.find({ expiring_date: expiryDate });
   }
 }

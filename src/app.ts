@@ -7,12 +7,19 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
+import "./helpers/cronJobs";
+import communityRoutes from "./router/community";
+import "./models/users";
+import "./models/communities";
+import "./models/userProfile";
+import "./models/milestones";
 import router from "./router/app";
 import userProfileRoutes from "./router/userProfileRoutes";
 
 dotenv.config();
 
 const app = express();
+app.use(express.json());
 
 app.use(
   cors({
@@ -49,3 +56,6 @@ app.use("/", router());
 
 // Use user profile routes
 app.use("/api/users", userProfileRoutes);
+
+// Use community routes
+app.use("/community", communityRoutes);
