@@ -91,11 +91,21 @@ export default class CommunityClient {
     achieved_amount: number,
     status: string
   ): Promise<any> {
-    console.log(milestone_id, achieved_amount, status);
     return MilestoneModel.findOneAndUpdate(
       { _id: milestone_id },
       { achieved_amount, status, updatedAt: Date.now() },
       { new: true }
     ).then((milestone) => milestone.toObject());
+  }
+
+  static async updateCommunityExpiringDate(
+    community_id: string,
+    expiring_date: string
+  ): Promise<any> {
+    return CommunityModel.findOneAndUpdate(
+      { _id: community_id },
+      { expiring_date: new Date(expiring_date), updatedAt: Date.now() },
+      { new: true }
+    ).then((community) => community.toObject());
   }
 }

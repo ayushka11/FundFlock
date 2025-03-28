@@ -24,13 +24,13 @@ export default class TransactionService {
     }
   }
 
-  static async getTransactionsByUser(user_id: string): Promise<any> {
+  static async getTransactionsByUser(user_id: string, pageNumber: number): Promise<any> {
     try {
-      if (!user_id) {
+      if (!user_id || !pageNumber) {
         throw new CustomError("missing required fields", 400);
       }
 
-      const data = await TransactionClient.getTransactionsByUser(user_id);
+      const data = await TransactionClient.getTransactionsByUser(user_id, pageNumber);
 
       return data;
     } catch (error) {
@@ -38,14 +38,15 @@ export default class TransactionService {
     }
   }
 
-  static async getTransactionsByCommunity(community_id: string): Promise<any> {
+  static async getTransactionsByCommunity(community_id: string, pageNumber: number): Promise<any> {
     try {
       if (!community_id) {
         throw new CustomError("missing required fields", 400);
       }
 
       const data = await TransactionClient.getTransactionsByCommunity(
-        community_id
+        community_id,
+        pageNumber
       );
 
       return data;
