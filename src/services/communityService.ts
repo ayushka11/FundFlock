@@ -337,10 +337,6 @@ export default class CommunityService {
 
       const community = await CommunityClient.getCommunity(community_id);
 
-      if (community.expiring_date < new Date()) {
-        throw new CustomError("Community has already expired", 400);
-      }
-
       const data = await CommunityClient.updateCommunityExpiringDate(
         community_id,
         expiring_date
