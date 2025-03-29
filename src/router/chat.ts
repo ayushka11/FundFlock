@@ -7,6 +7,7 @@ export default (router: express.Router) => {
   const chatRouter = express.Router();
 
   chatRouter.post("/send", verifyToken, ChatController.sendMessage);
+  chatRouter.get("/getChats/:community_id/:page", verifyToken, ChatController.getChats);
 
   chatRouter.use(errorHandlingMiddleware);
 

@@ -22,4 +22,21 @@ export default class ChatService {
             throw error;
         }
     }
+
+    static async getChats(
+        community_id: string,
+        page: number
+    ): Promise<any> {
+        try {
+            if (!community_id || !page) {
+                throw new Error("missing required fields");
+            }
+
+            const data = await ChatClient.getChats(community_id, page);
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
