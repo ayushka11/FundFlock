@@ -8,6 +8,7 @@ export default (router: express.Router) => {
 
   chatRouter.post("/send", verifyToken, ChatController.sendMessage);
   chatRouter.get("/getChats/:community_id/:page", verifyToken, ChatController.getChats);
+  chatRouter.post("/updateLastRead", verifyToken, ChatController.updateLastReadMessage);
 
   chatRouter.use(errorHandlingMiddleware);
 
