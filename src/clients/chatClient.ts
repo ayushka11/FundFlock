@@ -38,7 +38,6 @@ export default class ChatClient {
         .skip(skip)
         .limit(limit)
         .lean();
-
       const senderIds = messages.map((msg) => msg.sender_id);
       const users = await UserModel.find(
         { _id: { $in: senderIds } },
