@@ -18,6 +18,9 @@ export default class ChatController {
         return ResponseHelper.sendErrorResponse(res, "Failed to send message", 500);
       }
 
+      const message_id = data.message_id;
+      await ChatService.updateLastReadMessage(user_id, community_id, message_id);
+
       return ResponseHelper.sendSuccessResponse(res, data);
     } catch (error) {
       console.error(error);
