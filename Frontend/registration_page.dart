@@ -14,7 +14,7 @@ class RegistrationPage extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        primaryColor: const Color(0xFF9290C3), // Changed primary color
+        primaryColor: const Color(0xFF9290C3),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF9290C3)),
       ),
       initialRoute: SignUpWidget.routeName,
@@ -43,7 +43,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final FocusNode _passwordFocusNode = FocusNode();
 
   bool _passwordVisibility = false;
+  bool _isEmailValid = true;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   @override
   void dispose() {
@@ -54,6 +56,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  void _validateEmail(String email) {
+    setState(() {
+      _isEmailValid = _emailRegex.hasMatch(email);
+    });
   }
 
   String? _extractJwtFromCookies(String cookies) {
@@ -68,6 +76,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   }
 
   Future<void> registerUser() async {
+    // First validate email format
+    _validateEmail(_emailController.text);
+
+    if (!_isEmailValid) {
+      _emailFocusNode.requestFocus();
+      return;
+    }
+
     if (_nameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
@@ -75,7 +91,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         var headers = {'Content-Type': 'application/json'};
         var request = http.Request(
           'POST',
-          Uri.parse('http://10.0.2.2:3000/auth/register'),
+          Uri.parse('http://192.168.14.49:3000/auth/register'),
         );
 
         final requestBody = {
@@ -121,7 +137,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => FundFlockApp()),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         } else if (jsonResponse["status"]["success"] == false &&
             jsonResponse["status"]["error"] == "user already exists") {
@@ -192,9 +208,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: const Color(
-          0xFF070F2B,
-        ), // Changed background to 070F2B
+        backgroundColor: const Color(0xFF070F2B),
         body: SingleChildScrollView(
           primary: false,
           child: Column(
@@ -215,7 +229,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white, // Changed to white
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -240,7 +254,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               ' Username',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white, // Changed to white
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -253,13 +267,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             obscureText: false,
                             style: const TextStyle(
                               fontSize: 14,
-                              color: Colors.white, // Text color white
+                              color: Colors.white,
                             ),
                             decoration: InputDecoration(
                               hintText: 'Enter your username...',
                               hintStyle: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey[400], // Hint text grey
+                                color: Colors.grey[400],
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -292,9 +306,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               filled: true,
-                              fillColor: const Color(
-                                0xFF1B1A55,
-                              ), // Darker background
+                              fillColor: const Color(0xFF1B1A55),
                             ),
                             minLines: 1,
                           ),
@@ -311,7 +323,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               'Email Address',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white, // Changed to white
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -325,26 +337,37 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               obscureText: false,
                               style: const TextStyle(
                                 fontSize: 14,
-                                color: Colors.white, // Text color white
+                                color: Colors.white,
                               ),
+                              onChanged: (value) {
+                                if (value.isNotEmpty) {
+                                  _validateEmail(value);
+                                }
+                              },
                               decoration: InputDecoration(
                                 hintText: 'Enter your email...',
                                 hintStyle: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey[400], // Hint text grey
+                                  color: Colors.grey[400],
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Colors.grey[700]!,
+                                    color:
+                                    _isEmailValid
+                                        ? Colors.grey[700]!
+                                        : Colors.red,
                                     width: 1,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: const Color(
+                                    color:
+                                    _isEmailValid
+                                        ? const Color(
                                       0xFF9290C3,
-                                    ).withOpacity(0.8),
+                                    ).withOpacity(0.8)
+                                        : Colors.red,
                                     width: 1,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -364,14 +387,24 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 filled: true,
-                                fillColor: const Color(
-                                  0xFF1B1A55,
-                                ), // Darker background
+                                fillColor: const Color(0xFF1B1A55),
                               ),
                               minLines: 1,
                               keyboardType: TextInputType.emailAddress,
                             ),
                           ),
+                          if (!_isEmailValid &&
+                              _emailController.text.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8, top: 4),
+                              child: Text(
+                                'Please enter a valid email address',
+                                style: TextStyle(
+                                  color: Colors.red[400],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 18),
@@ -385,7 +418,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               'Password',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white, // Changed to white
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -397,13 +430,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             obscureText: !_passwordVisibility,
                             style: const TextStyle(
                               fontSize: 14,
-                              color: Colors.white, // Text color white
+                              color: Colors.white,
                             ),
                             decoration: InputDecoration(
                               hintText: 'Enter your password...',
                               hintStyle: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey[400], // Hint text grey
+                                color: Colors.grey[400],
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -436,23 +469,21 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               filled: true,
-                              fillColor: const Color(
-                                0xFF1B1A55,
-                              ), // Darker background
+                              fillColor: const Color(0xFF1B1A55),
                               suffixIcon: InkWell(
                                 onTap:
                                     () => setState(
                                       () =>
-                                          _passwordVisibility =
-                                              !_passwordVisibility,
-                                    ),
+                                  _passwordVisibility =
+                                  !_passwordVisibility,
+                                ),
                                 focusNode: FocusNode(skipTraversal: true),
                                 child: Icon(
                                   _passwordVisibility
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined,
                                   size: 22,
-                                  color: Colors.grey, // Icon color grey
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -471,16 +502,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               Container(
                 decoration: const BoxDecoration(color: Colors.transparent),
                 child: ElevatedButton(
-                  onPressed: () {
-                    registerUser();
-                    print('Button pressed ...');
-                  },
+                  onPressed: registerUser,
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     padding: const EdgeInsets.all(8),
-                    backgroundColor: const Color(
-                      0xFF9290C3,
-                    ), // Changed to 9290C3
+                    backgroundColor: const Color(0xFF9290C3),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -522,15 +548,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                 text: 'Already have an account? ',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey, // Kept grey
+                                  color: Colors.grey,
                                 ),
                               ),
                               TextSpan(
                                 text: 'Log in',
                                 style: TextStyle(
-                                  color: const Color(
-                                    0xFF9290C3,
-                                  ), // Changed to 9290C3
+                                  color: const Color(0xFF9290C3),
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),

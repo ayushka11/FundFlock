@@ -36,6 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   bool _passwordVisible = false;
+  bool _isEmailValid = true;
+  final _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   @override
   void dispose() {
@@ -46,14 +48,28 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _validateEmail(String email) {
+    setState(() {
+      _isEmailValid = _emailRegex.hasMatch(email);
+    });
+  }
+
   Future<void> loginUser() async {
+    // First validate email format
+    _validateEmail(_emailController.text);
+
+    if (!_isEmailValid) {
+      _emailFocusNode.requestFocus();
+      return;
+    }
+
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
       try {
         var headers = {'Content-Type': 'application/json'};
         var request = http.Request(
           'POST',
-          Uri.parse('http://10.0.2.2:3000/auth/login'),
+          Uri.parse('http://192.168.14.49:3000/auth/login'),
         );
         final requestBody = {
           "email": _emailController.text,
@@ -167,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF070F2B), // Changed to 070F2B
+        backgroundColor: const Color(0xFF070F2B),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -182,16 +198,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, // Changed black text to white
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 12),
                     const Text(
                       'Please sign in to continue to your account',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                      ), // Kept grey
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ],
                 ),
@@ -206,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white, // Changed black text to white
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -215,32 +228,39 @@ class _LoginScreenState extends State<LoginScreen> {
                           focusNode: _emailFocusNode,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ), // Text color white
+                          style: const TextStyle(color: Colors.white),
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              _validateEmail(value);
+                            }
+                          },
                           decoration: InputDecoration(
                             hintText: 'Enter your email...',
-                            hintStyle: TextStyle(
-                              color: Colors.grey[400],
-                            ), // Hint text grey
+                            hintStyle: TextStyle(color: Colors.grey[400]),
                             filled: true,
-                            fillColor: const Color(
-                              0xFF1B1A55,
-                            ), // Darker background for fields
+                            fillColor: const Color(0xFF1B1A55),
                             suffixIcon: const Icon(
                               Icons.email,
                               color: Colors.grey,
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.grey[700]!,
+                                color:
+                                _isEmailValid
+                                    ? Colors.grey[700]!
+                                    : Colors.red,
                                 width: 1,
                               ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: const Color(0xFF9290C3).withOpacity(0.8),
+                                color:
+                                _isEmailValid
+                                    ? const Color(
+                                  0xFF9290C3,
+                                ).withOpacity(0.8)
+                                    : Colors.red,
                                 width: 1,
                               ),
                               borderRadius: BorderRadius.circular(8),
@@ -261,6 +281,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                        if (!_isEmailValid && _emailController.text.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, top: 4),
+                            child: Text(
+                              'Please enter a valid email address',
+                              style: TextStyle(
+                                color: Colors.red[400],
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -272,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white, // Changed black text to white
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -281,18 +312,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           focusNode: _passwordFocusNode,
                           obscureText: !_passwordVisible,
                           textInputAction: TextInputAction.done,
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ), // Text color white
+                          style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             hintText: 'Enter your password...',
-                            hintStyle: TextStyle(
-                              color: Colors.grey[400],
-                            ), // Hint text grey
+                            hintStyle: TextStyle(color: Colors.grey[400]),
                             filled: true,
-                            fillColor: const Color(
-                              0xFF1B1A55,
-                            ), // Darker background for fields
+                            fillColor: const Color(0xFF1B1A55),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _passwordVisible
@@ -346,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text(
                           'Forgot Password?',
                           style: TextStyle(
-                            color: Color(0xFF9290C3), // Changed to 9290C3
+                            color: Color(0xFF9290C3),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -354,17 +379,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        loginUser();
-                        print(
-                          'Login attempted with email: ${_emailController.text}',
-                        );
-                      },
+                      onPressed: loginUser,
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: const Color(
-                          0xFF9290C3,
-                        ), // Changed to 9290C3
+                        backgroundColor: const Color(0xFF9290C3),
                         minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
@@ -385,7 +403,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         const Text(
                           'Don\'t have an account?',
-                          style: TextStyle(color: Colors.grey), // Kept grey
+                          style: TextStyle(color: Colors.grey),
                         ),
                         TextButton(
                           onPressed: () {
@@ -398,7 +416,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text(
                             'Sign Up',
                             style: TextStyle(
-                              color: Color(0xFF9290C3), // Changed to 9290C3
+                              color: Color(0xFF9290C3),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
